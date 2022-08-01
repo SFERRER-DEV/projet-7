@@ -1,0 +1,19 @@
+{
+  "name": "les-petits-plats",
+  "version": "1.0.0",
+  "description": "Réaliser le site de recettes de cuisine les petits plats pour la formation Openclassrooms de développeur d'application JS React. Les petits plats est le projet numéro 7 de la formation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SFERRER-DEV/projet-7.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SFERRER-DEV/projet-7/issues"
+  },
+  "homepage": "https://github.com/SFERRER-DEV/projet-7#readme"
+}
