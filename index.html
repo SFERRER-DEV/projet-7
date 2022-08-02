@@ -19,6 +19,7 @@
         <h1 class="heading__title row">Les petits plats</h1>
     </header>
     <main class="container">
+        <!-- le formulaire de recherche -->
         <form class="form-search row col">
             <div class="input-group">
                 <input id="search" type="text" autocomplete="off" class="form-control col-11 bg-light border-0"
@@ -28,11 +29,11 @@
                 </button>
             </div>
         </form>
-
+        <!-- la ligne des étiquettes -->
         <div class="row mt-4">
-            <span class="badge badge-primary">Tag coco 1</span><br />
+            <span class="badge badge-primary">coco</span><br />
         </div>
-
+        <!-- la ligne des filtres -->
         <div class="filters row col mt-4">
             <!-- liste déroulante des ingrédients -->
             <div id="ingredients-dropdown" class="filters__dropdown col-2" tabindex="0">
@@ -217,6 +218,11 @@
                 </ul>
             </div>
         </div>
+        <!-- la lignes des recettes -->
+        <div id="recipes" class="recipes row col mt-4">
+
+        </div>
+
     </main>
 
     <!-- Optional JavaScript -->
@@ -231,7 +237,7 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <!-- Page -->
-    <script src="scripts/pages/index.js"></script>
+    <script type="module" src="scripts/pages/index.js"></script>
 </body>
 
 </html>
