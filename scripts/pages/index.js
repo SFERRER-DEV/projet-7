@@ -1,4 +1,6 @@
-addDropdownToggleEvents();
+// Importer le singleton API et la classe e
+import Ingredient from "../models/ingredient.js";
+import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
 
 /**
  * Ajouter un évènement à chaqu'un des boutons ouvrant les listes déroulantes
@@ -68,65 +70,50 @@ function closeAllDropdowns() {
   });
 }
 
-/** @type {NodeList} une collection avec les trois input */
-const searchByTagInput = document.querySelectorAll(
-  ".filters__dropdown__search"
-);
-//
-searchByTagInput.forEach((input) => {
-  const type = input.dataset.type;
-  input.addEventListener("input", (event) => {
-    filterTagSuggestions(event.target.value, type);
-  });
-});
+/**
+ * Afficher les données des recettes
+ * dans des html cards sur la page d'accueil en utilisant
+ * la factory Recipe
+ *
+ * @param {Array<Recipe>} recipes - une liste de recettes
+ */
+function displayData(recipes) {
+  let i = 0;
+
+  try {
+    // Parcourir la liste des recettes
+    recipes.forEach((rec) => {
+      console.log(rec.toString());
+      // Parcourir les ingredients de la recette
+      rec.ingredients.forEach((ing) => {
+        console.log(` > ${ing.toString()}`);
+      });
+      // Parcourir les ustensiles nécessaires
+      rec.ustensils.forEach((ust) => {
+        console.log(` >> ${ust}`);
+      });
+      i++;
+      if (i == 3) throw "fin";
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 /**
- * filter tag suggestions based on searchInput
- * @param {String} searchInput
- * @param {String} type
+ * Point d'entrée de l'application
+ * Obtenir les données de manière asynchrone et
+ * les afficher
  */
-function filterTagSuggestions(searchInput, type) {
-  const regex = new RegExp(`${searchInput}`, "i");
+function init() {
+  // Ajouter les évènements des dropdowns
+  addDropdownToggleEvents();
 
-  let results;
+  /** @type {Array<Recipe>} un tableau de recettes */
+  const allRecipes = singletonRecipesApi.getDataRecipes();
 
-  switch (type) {
-    case "ingredients":
-      let ingredients = getTagList("ingredients", filteredRecipes);
-      results = ingredients.filter((ingredient) => regex.test(ingredient));
-      break;
-
-    case "appliances":
-      let appliances = getTagList("appliances", filteredRecipes);
-      results = appliances.filter((appliance) => regex.test(appliance));
-      break;
-
-    case "ustensils":
-      let ustensils = getTagList("ustensils", filteredRecipes);
-      results = ustensils.filter((ustensil) => regex.test(ustensil));
-      break;
-  }
-  updateDatalist(results, type);
+  // Afficher les données
+  displayData(allRecipes);
 }
 
-//
-function myFunction() {
-  var input, filter, ul, li, a, i, txtValue;
-
-  input = document.getElementById("myInput");
-
-  filter = input.value.toUpperCase();
-
-  ul = document.getElementById("myUL");
-  li = ul.getElementsByTagName("li");
-
-  for (i = 0; i < li.length; i++) {
-    a = li[i].getElementsByTagName("a")[0];
-    txtValue = a.textContent || a.innerText;
-    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-      li[i].style.display = "";
-    } else {
-      li[i].style.display = "none";
-    }
-  }
-}
+init();
