@@ -8,12 +8,16 @@
   --tertiary-color: #ed6454;
 }
 
+html {
+  /* default font-size is 16px - this is set in the default browser stylesheet */
+  font-size: 16px;
+}
+
 .heading {
   margin-top: 2.6em;
 }
 
 .heading__logo {
-  height: 3.1em;
   margin: 0 auto;
 }
 
@@ -21,7 +25,7 @@
   color: var(--logo-color);
   font-family: "DM Sans", sans-serif;
   font-weight: 700;
-  font-size: 1.9em;
+  font-size: 1.5em;
   justify-content: center;
 }
 
@@ -119,4 +123,46 @@
 .filters__dropdown.show ul li {
   word-wrap: break-word;
   width: 33%;
+}
+
+/* Recipes HTML Cards */
+
+.card-recipe {
+  height: 480px;
+  cursor: pointer;
+  /*border: 3px red dotted;*/
+}
+
+.card-recipe__zone,
+.card-recipe__body,
+.card-recipe__body__heading__title,
+.card-recipe__body__heading__time,
+.card-recipe__body__elements__list,
+.card-recipe__body__elements__ingredients,
+.card-recipe__body__elements__description,
+.card-recipe__body__heading__time__clock {
+  /*border: 1px blue dotted;*/
+}
+
+.card-recipe__body__heading,
+.card-recipe__body__heading__title {
+  font-size: 1em;
+}
+
+.card-recipe__body__heading__time__clock {
+  font-size: 1.2em;
+}
+
+.card-recipe__body__elements {
+  font-size: 0.8em;
+}
+
+/* Description de la réalisation de la recette: dépassement texte avec "..." */
+.card-recipe__body__elements__description {
+  overflow: hidden;
+  display: -webkit-box;
+  line-height: 20px;
+  height: 140px;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
 }

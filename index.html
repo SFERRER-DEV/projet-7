@@ -18,7 +18,7 @@
         <img class="heading__logo row" src="./assets/logo/logo.svg" alt="Logo">
         <h1 class="heading__title row">Les petits plats</h1>
     </header>
-    <main class="container">
+    <main class="container px-0">
         <!-- le formulaire de recherche -->
         <form class="form-search row col">
             <div class="input-group">
@@ -34,9 +34,9 @@
             <span class="badge badge-primary">coco</span><br />
         </div>
         <!-- la ligne des filtres -->
-        <div class="filters row col mt-4">
+        <div class="filters row mt-4">
             <!-- liste déroulante des ingrédients -->
-            <div id="ingredients-dropdown" class="filters__dropdown col-2" tabindex="0">
+            <div id="ingredients-dropdown" class="filters__dropdown col-3 ml-2" tabindex="0">
                 <input type="text" name="ingredients" id="dropdown-ingredients" class="filters__dropdown__search"
                     data-type="ingredients" />
                 <button type="button" id="toggleIngredients" class="btn filters__dropdown__toogle"
@@ -161,7 +161,7 @@
             </div>
 
             <!-- liste déroulante des appareils de cuisine -->
-            <div id="appliances-dropdown" class="filters__dropdown col-2 ml-5" tabindex="0">
+            <div id="appliances-dropdown" class="filters__dropdown col-3 mx-3" tabindex="0">
                 <input type="text" name="appliances" id="dropdown-appliances" class="filters__dropdown__search"
                     data-type="appliances" />
                 <button type="button" id="toggleAppliances" class="btn filters__dropdown__toogle"
@@ -184,7 +184,7 @@
             </div>
 
             <!-- liste déroulante des ustensiles de cuisine -->
-            <div id="tools-dropdown" class="filters__dropdown col-2 ml-5" tabindex="0">
+            <div id="tools-dropdown" class="filters__dropdown col-3" tabindex="0">
                 <input type="text" name="tools" id="dropdown-tools" class="filters__dropdown__search"
                     data-type="tools" />
                 <button type="button" id="toggleTools" class="btn filters__dropdown__toogle" data-type="tools">
@@ -219,7 +219,7 @@
             </div>
         </div>
         <!-- la lignes des recettes -->
-        <div id="recipes" class="recipes row col mt-4">
+        <div id="recipes" class="recipes row mt-4">
 
         </div>
 

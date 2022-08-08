@@ -1,6 +1,8 @@
-// Importer le singleton API et la classe e
 import Ingredient from "../models/ingredient.js";
+// Importer le singleton API et la classe
 import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
+// Importer la fabrique de recette
+import * as facRecipe from "./../factories/recipe.js";
 
 /**
  * Ajouter un évènement à chaqu'un des boutons ouvrant les listes déroulantes
@@ -24,13 +26,13 @@ function addDropdownToggleEvents() {
     elm.addEventListener("click", () => {
       if (dropdown.classList.contains("show")) {
         dropdown.classList.remove("show"); // ... enlever la classe show à sa dropdown
-        dropdown.classList.add("col-2");
-        dropdown.classList.remove("col-6");
+        dropdown.classList.add("col-3");
+        dropdown.classList.remove("col-5");
       } else {
         closeAllDropdowns();
         dropdown.classList.add("show"); //  ... ou ajouter la classe show à sa dropdown
-        dropdown.classList.add("col-6");
-        dropdown.classList.remove("col-2");
+        dropdown.classList.add("col-5");
+        dropdown.classList.remove("col-3");
       }
     });
   });
@@ -65,8 +67,8 @@ function closeAllDropdowns() {
   const openedDropdowns = document.querySelectorAll(".show");
   openedDropdowns.forEach((dropdown) => {
     dropdown.classList.remove("show");
-    dropdown.classList.remove("col-6");
-    dropdown.classList.add("col-2");
+    dropdown.classList.remove("col-5");
+    dropdown.classList.add("col-3");
   });
 }
 
@@ -79,6 +81,8 @@ function closeAllDropdowns() {
  */
 function displayData(recipes) {
   let i = 0;
+  /** @type {HTMLDivElement} le conteneur html pour les recettes */
+  const parent = document.getElementById("recipes");
 
   try {
     // Parcourir la liste des recettes
@@ -93,7 +97,15 @@ function displayData(recipes) {
         console.log(` >> ${ust}`);
       });
       i++;
-      if (i == 3) throw "fin";
+      /** @type {[number, Object]} une fonction pour fabriquer la html card d'une recette */
+      const recipeModel = facRecipe.recipeFactory(rec);
+      /** @type {HTMLElement} un article contenant une recette complète */
+      const recipeCardDOM = recipeModel.getRecipeCardDOM();
+      // Ajouter cette html card fabriquée pour l'afficher dans la page
+      parent.appendChild(recipeCardDOM);
+
+      // Sortir de la boucle rapidement pour les tests
+      if (i == 999) throw "fin";
     });
   } catch (error) {
     console.log(error);
