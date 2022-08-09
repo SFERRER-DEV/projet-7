@@ -1,5 +1,6 @@
-import Ingredient from "../models/ingredient.js";
-// Importer le singleton API et la classe
+// Importer la classe Recette
+import Recipe from "../models/recipe.js";
+// Importer le singleton API et sa classe
 import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
 // Importer la fabrique de recette
 import * as facRecipe from "./../factories/recipe.js";
@@ -110,6 +111,13 @@ function displayData(recipes) {
   } catch (error) {
     console.log(error);
   }
+  //
+  console.log("=== Tous les ingrédients ===");
+  console.log(Recipe.allIngredients);
+  console.log("=== Tous les ustensiles ===");
+  console.log(Recipe.allUstensils);
+  console.log("=== Tout l'électroménager ===");
+  console.log(Recipe.allAppliances);
 }
 
 /**
@@ -121,7 +129,7 @@ function init() {
   // Ajouter les évènements des dropdowns
   addDropdownToggleEvents();
 
-  /** @type {Array<Recipe>} un tableau de recettes */
+  /** @type {Array<Recipe>} un tableau avec toutes les recettes connues */
   const allRecipes = singletonRecipesApi.getDataRecipes();
 
   // Afficher les données
