@@ -85,7 +85,7 @@ html {
   border: none;
 }
 
-.filters__dropdown__toogle {
+.filters__dropdown__toggle {
   transition: transform 100ms;
   line-height: 2em;
   padding: 0;
@@ -94,11 +94,11 @@ html {
   min-width: 32px;
 }
 
-.filters__dropdown__toogle:focus {
+.filters__dropdown__toggle:focus {
   box-shadow: none;
 }
 
-.filters__dropdown.show .filters__dropdown__toogle {
+.filters__dropdown.show .filters__dropdown__toggle {
   transform: rotate(180deg);
   transition: transform 125ms;
 }

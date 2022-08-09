@@ -39,11 +39,11 @@
             <div id="ingredients-dropdown" class="filters__dropdown col-3 ml-2" tabindex="0">
                 <input type="text" name="ingredients" id="dropdown-ingredients" class="filters__dropdown__search"
                     data-type="ingredients" />
-                <button type="button" id="toggleIngredients" class="btn filters__dropdown__toogle"
+                <button type="button" id="toggleIngredients" class="btn filters__dropdown__toggle"
                     data-type="ingredients">
                     <i class="bi-chevron-down"></i>
                 </button>
-                <ul id="listIngredients" class="filters__dropdown__ingredients">
+                <ul id="listIngredients" data-type="ingredients" class="filters__dropdown__ingredients p-3">
                     <li data-type="ingredients">Ail</li>
                     <li data-type="ingredients">Ananas</li>
                     <li data-type="ingredients">Banane</li>
@@ -164,11 +164,11 @@
             <div id="appliances-dropdown" class="filters__dropdown col-3 mx-3" tabindex="0">
                 <input type="text" name="appliances" id="dropdown-appliances" class="filters__dropdown__search"
                     data-type="appliances" />
-                <button type="button" id="toggleAppliances" class="btn filters__dropdown__toogle"
+                <button type="button" id="toggleAppliances" class="btn filters__dropdown__toggle"
                     data-type="appliances">
                     <i class="bi-chevron-down"></i>
                 </button>
-                <ul id="listAppliances" class="filters__dropdown__appliances">
+                <ul id="listAppliances" data-type="appliances" class="filters__dropdown__appliances p-3">
                     <li data-type="appliances">Blender</li>
                     <li data-type="appliances">Casserole</li>
                     <li data-type="appliances">Casserolle</li>
@@ -184,37 +184,37 @@
             </div>
 
             <!-- liste déroulante des ustensiles de cuisine -->
-            <div id="tools-dropdown" class="filters__dropdown col-3" tabindex="0">
-                <input type="text" name="tools" id="dropdown-tools" class="filters__dropdown__search"
-                    data-type="tools" />
-                <button type="button" id="toggleTools" class="btn filters__dropdown__toogle" data-type="tools">
+            <div id="ustensils-dropdown" class="filters__dropdown col-3" tabindex="0">
+                <input type="text" name="ustensils" id="dropdown-ustensil" class="filters__dropdown__search"
+                    data-type="ustensils" />
+                <button type="button" id="toggleUstensils" class="btn filters__dropdown__toggle" data-type="ustensils">
                     <i class="bi-chevron-down"></i>
                 </button>
-                <ul id="listTools" class="filters__dropdown__tools">
-                    <li data-type="tools">bol</li>
-                    <li data-type="tools">casserolle</li>
-                    <li data-type="tools">cocotte minute</li>
-                    <li data-type="tools">couteau</li>
-                    <li data-type="tools">cuillère en bois</li>
-                    <li data-type="tools">cuillère à Soupe</li>
-                    <li data-type="tools">cuillère à melon</li>
-                    <li data-type="tools">fouet</li>
-                    <li data-type="tools">fourchette</li>
-                    <li data-type="tools">louche</li>
-                    <li data-type="tools">moule à gateaux</li>
-                    <li data-type="tools">moule à tarte</li>
-                    <li data-type="tools">moule à tartelettes </li>
-                    <li data-type="tools">passoire</li>
-                    <li data-type="tools">plaque de cuisson</li>
-                    <li data-type="tools">plat à gratin</li>
-                    <li data-type="tools">poelle à frire</li>
-                    <li data-type="tools">presse citron</li>
-                    <li data-type="tools">rouleau à patisserie</li>
-                    <li data-type="tools">râpe à fromage</li>
-                    <li data-type="tools">saladier</li>
-                    <li data-type="tools">spatule</li>
-                    <li data-type="tools">verres</li>
-                    <li data-type="tools">Économe</li>
+                <ul id="listUstensils" data-type="ustensils" class="filters__dropdown__ustensils p-3">
+                    <li data-type="ustensils">bol</li>
+                    <li data-type="ustensils">casserolle</li>
+                    <li data-type="ustensils">cocotte minute</li>
+                    <li data-type="ustensils">couteau</li>
+                    <li data-type="ustensils">cuillère en bois</li>
+                    <li data-type="ustensils">cuillère à Soupe</li>
+                    <li data-type="ustensils">cuillère à melon</li>
+                    <li data-type="ustensils">fouet</li>
+                    <li data-type="ustensils">fourchette</li>
+                    <li data-type="ustensils">louche</li>
+                    <li data-type="ustensils">moule à gateaux</li>
+                    <li data-type="ustensils">moule à tarte</li>
+                    <li data-type="ustensils">moule à tartelettes </li>
+                    <li data-type="ustensils">passoire</li>
+                    <li data-type="ustensils">plaque de cuisson</li>
+                    <li data-type="ustensils">plat à gratin</li>
+                    <li data-type="ustensils">poelle à frire</li>
+                    <li data-type="ustensils">presse citron</li>
+                    <li data-type="ustensils">rouleau à patisserie</li>
+                    <li data-type="ustensils">râpe à fromage</li>
+                    <li data-type="ustensils">saladier</li>
+                    <li data-type="ustensils">spatule</li>
+                    <li data-type="ustensils">verres</li>
+                    <li data-type="ustensils">Économe</li>
                 </ul>
             </div>
         </div>

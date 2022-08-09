@@ -4,7 +4,8 @@ import Recipe from "../models/recipe.js";
 import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
 // Importer la fabrique de recette
 import * as facRecipe from "./../factories/recipe.js";
-
+// Importer les fonctions utilitaires pour gérer les listes de filtres
+import * as dropdown from "./../util/dropdown.js";
 /**
  * Ajouter un évènement à chaqu'un des boutons ouvrant les listes déroulantes
  * add events to show dropdown list for click toggle button, focus, and blur
@@ -12,11 +13,11 @@ import * as facRecipe from "./../factories/recipe.js";
  */
 function addDropdownToggleEvents() {
   /** @type {NodeList} une collection avec les trois boutons pour ouvrir fermer les trois listes déroulantes */
-  const toggleButtons = document.querySelectorAll(".filters__dropdown__toogle");
+  const toggleButtons = document.querySelectorAll(".filters__dropdown__toggle");
 
   // Parcourir les trois boutons toggle
   toggleButtons.forEach((elm) => {
-    /** @type {string} l'attribut data-type de ce bouton toogle contient le nom du type des éléments à rechercher */
+    /** @type {string} l'attribut data-type de ce bouton toggle contient le nom du type des éléments à rechercher */
     const searchName = elm.dataset.type;
     /** @type {string} l'identifiant d'une custom liste déroulante correspondant à ce bouton toggle actuellement lu */
     const idDropbox = `${searchName}-dropdown`;
@@ -51,8 +52,8 @@ window.onclick = function (event) {
       ".filters__dropdown",
       ".filters__dropdown ul",
       ".filters__dropdown ul li",
-      ".filters__dropdown__toogle",
-      ".filters__dropdown__toogle i",
+      ".filters__dropdown__toggle",
+      ".filters__dropdown__toggle i",
       ".filters__dropdown__search",
     ])
   ) {
@@ -88,14 +89,14 @@ function displayData(recipes) {
   try {
     // Parcourir la liste des recettes
     recipes.forEach((rec) => {
-      console.log(rec.toString());
+      //console.log(rec.toString());
       // Parcourir les ingredients de la recette
       rec.ingredients.forEach((ing) => {
-        console.log(` > ${ing.toString()}`);
+        // console.log(` > ${ing.toString()}`);
       });
       // Parcourir les ustensiles nécessaires
       rec.ustensils.forEach((ust) => {
-        console.log(` >> ${ust}`);
+        // console.log(` >> ${ust}`);
       });
       i++;
       /** @type {[number, Object]} une fonction pour fabriquer la html card d'une recette */
@@ -111,13 +112,14 @@ function displayData(recipes) {
   } catch (error) {
     console.log(error);
   }
-  //
+  /*
   console.log("=== Tous les ingrédients ===");
   console.log(Recipe.allIngredients);
   console.log("=== Tous les ustensiles ===");
   console.log(Recipe.allUstensils);
   console.log("=== Tout l'électroménager ===");
   console.log(Recipe.allAppliances);
+  */
 }
 
 /**
@@ -126,6 +128,22 @@ function displayData(recipes) {
  * les afficher
  */
 function init() {
+  /** @type {HTMLElement} liste ul des ingrédients */
+  const listIngredients = document.getElementById("listIngredients");
+  /** @type {HTMLElement} liste ul des ustensiles */
+  const listUstensils = document.getElementById("listUstensils");
+  /** @type {HTMLElement} liste ul de l'électroménager */
+  const listAppliances = document.getElementById("listAppliances");
+
+  // Renseigner une dropdown avec les ingrédients uniques provenant dynamiquement des données
+  dropdown.displayListItem(listIngredients, Recipe.allIngredients);
+
+  // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
+  dropdown.displayListItem(listUstensils, Recipe.allUstensils);
+
+  // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
+  dropdown.displayListItem(listAppliances, Recipe.allAppliances);
+
   // Ajouter les évènements des dropdowns
   addDropdownToggleEvents();
 
