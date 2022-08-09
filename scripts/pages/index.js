@@ -82,6 +82,7 @@ function closeAllDropdowns() {
  * @param {Array<Recipe>} recipes - une liste de recettes
  */
 function displayData(recipes) {
+  /** @type {number} un compteur pour sotir de la boucle */
   let i = 0;
   /** @type {HTMLDivElement} le conteneur html pour les recettes */
   const parent = document.getElementById("recipes");
@@ -89,15 +90,6 @@ function displayData(recipes) {
   try {
     // Parcourir la liste des recettes
     recipes.forEach((rec) => {
-      //console.log(rec.toString());
-      // Parcourir les ingredients de la recette
-      rec.ingredients.forEach((ing) => {
-        // console.log(` > ${ing.toString()}`);
-      });
-      // Parcourir les ustensiles nécessaires
-      rec.ustensils.forEach((ust) => {
-        // console.log(` >> ${ust}`);
-      });
       i++;
       /** @type {[number, Object]} une fonction pour fabriquer la html card d'une recette */
       const recipeModel = facRecipe.recipeFactory(rec);
@@ -105,21 +97,17 @@ function displayData(recipes) {
       const recipeCardDOM = recipeModel.getRecipeCardDOM();
       // Ajouter cette html card fabriquée pour l'afficher dans la page
       parent.appendChild(recipeCardDOM);
-
       // Sortir de la boucle rapidement pour les tests
       if (i == 999) throw "fin";
     });
   } catch (error) {
     console.log(error);
   }
-  /*
-  console.log("=== Tous les ingrédients ===");
-  console.log(Recipe.allIngredients);
-  console.log("=== Tous les ustensiles ===");
-  console.log(Recipe.allUstensils);
-  console.log("=== Tout l'électroménager ===");
-  console.log(Recipe.allAppliances);
-  */
+
+  console.log(`Nombre de recettes: ${recipes.length}`);
+  console.log(`Ingrédients trouvés: ${Recipe.allIngredients.size}`);
+  console.log(`Ustensiles trouvés: ${Recipe.allUstensils.size}`);
+  console.log(`Electoménager trouvé: ${Recipe.allAppliances.size}`);
 }
 
 /**

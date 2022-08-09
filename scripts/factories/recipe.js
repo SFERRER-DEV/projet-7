@@ -133,7 +133,7 @@ function getRecipeTitle(recipeTitle, recipeTime) {
   icone.classList.add("bi-clock");
   icone.classList.add("mr-2");
   icone.setAttribute("aria-hidden", true);
-
+  // Ajouter devant le temps en mn
   timeToMake.prepend(icone);
   // Ajouter le nom de la recette
   divParent.appendChild(title);

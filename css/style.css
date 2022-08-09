@@ -123,6 +123,30 @@ html {
 .filters__dropdown.show ul li {
   word-wrap: break-word;
   width: 33%;
+  cursor: pointer;
+}
+
+/* Filters tags */
+
+.tags__tag {
+  color: white;
+  font-size: 0.9em;
+  min-width: 75px;
+}
+
+.tags__tag[data-type="ingredients"] {
+  background: var(--primary-color);
+}
+.tags__tag[data-type="appliances"] {
+  background: var(--secondary-color);
+}
+.tags__tag[data-type="ustensils"] {
+  background: var(--tertiary-color);
+}
+
+.tags__tag__cross {
+  font-size: 1.2em;
+  cursor: pointer;
 }
 
 /* Recipes HTML Cards */

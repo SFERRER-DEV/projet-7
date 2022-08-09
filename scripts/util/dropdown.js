@@ -1,3 +1,5 @@
+// Importer les fonctions utilitaires pour créer des éléments du DOM
+import * as Dom from "./../util/dom.js";
 /**
  * Assembler dans une liste hmtl ul les éléments stockés
  * dauns une collection Set pour les ingrédients, les ustensiles
@@ -19,8 +21,6 @@ export function displayListItem(aList, someItems) {
   sortSet(someItems);
   // Parcourir les items ...
   someItems.forEach((item) => {
-    //  <li data-type="ingredients">Ail</li>
-    console.log(item);
     listItem = document.createElement("li");
     // Créer le noeud avec le texte de l'items
     text = document.createTextNode(`${capitalizeFirstLetter(item)}`);
@@ -28,12 +28,66 @@ export function displayListItem(aList, someItems) {
     listItem.appendChild(text);
     // Ce data attribut permet de marquer l'item pour identifier son type
     listItem.setAttribute("data-type", aList.dataset.type);
+    listItem.addEventListener("click", (event) => clickListItem(event));
     // Ajouter l'élément à la liste concernée
     aList.appendChild(listItem);
     // Raz
     item = null;
     text = null;
   });
+}
+
+/**
+ * Cliquer sur un mot clé dans une des listes
+ *
+ * @param {Event} event un évènement click sur un list-item bleu, rouge, vert
+ */
+function clickListItem(event) {
+  /** @type {string} le type du filtre cliqué */
+  const filterType = event.currentTarget.dataset.type;
+  /** @type {string} le texte de l'élément cliqué  */
+  const tagText = event.currentTarget.textContent;
+  console.log(`Click ! ${filterType}: ${tagText}`);
+
+  /** @type {HTMLDivElement} le conteneur html des étiquettes de filtre */
+  const parent = document.getElementById("tags");
+
+  /** @type {HTMLSpanElement} un tag bleu, vert ou rouge */
+  const aTag = Dom.getSpan(
+    ["tags__tag", "px-2", "py-1", "m-1", "my-2", "rounded"],
+    `${tagText}`
+  );
+  aTag.setAttribute("data-type", filterType);
+
+  /** @type {HTMLElement} - balise pour contenir l'icone croix pour fermer ce tag*/
+  const icone = document.createElement("i");
+  icone.classList.add("tags__tag__cross");
+  icone.classList.add("bi");
+  icone.classList.add("bi-x-circle");
+  icone.classList.add("ml-3");
+  icone.classList.add("my-auto");
+  icone.setAttribute("aria-hidden", true);
+  // Ajouter la croix au tag
+  aTag.append(icone);
+  // Ajouter l'évènement pour faire disparaitre l'étiquette avec ss croix
+  aTag.addEventListener("click", (event) => closeTag(event));
+
+  // Ajouter cette html card fabriquée pour l'afficher dans la page
+  parent.appendChild(aTag);
+}
+
+/**
+ * Fermer une étiquette
+ *
+ * @param {Event} event un évènement click sur la croix d'une étiquette
+ */
+function closeTag(event) {
+  /** @type {HTMLDivElement} le conteneur html des étiquettes de filtre */
+  const parent = document.getElementById("tags");
+  /** @type {HTMLSpanElement} l'étiquette cliquée  */
+  const tag = event.currentTarget;
+  // faire disparaitre l'étiquette
+  parent.removeChild(tag);
 }
 
 /**
