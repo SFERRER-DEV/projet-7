@@ -126,13 +126,13 @@ function getRecipeTitle(recipeTitle, recipeTime) {
     `${recipeTime} min`
   );
   /** @type {HTMLElement} - balise de texte pour contenir l'icone horloge */
-  const icone = document.createElement("i");
-  // Ajouter la classe BEM
-  icone.classList.add("card-recipe__body__heading__time__clock");
-  icone.classList.add("bi");
-  icone.classList.add("bi-clock");
-  icone.classList.add("mr-2");
-  icone.setAttribute("aria-hidden", true);
+  const icone = Dom.getIcone([
+    "card-recipe__body__heading__time__clock",
+    "bi",
+    "bi-clock",
+    "mr-2",
+    "my-auto",
+  ]);
   // Ajouter devant le temps en mn
   timeToMake.prepend(icone);
   // Ajouter le nom de la recette

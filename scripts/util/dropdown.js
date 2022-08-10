@@ -60,13 +60,14 @@ function clickListItem(event) {
   aTag.setAttribute("data-type", filterType);
 
   /** @type {HTMLElement} - balise pour contenir l'icone croix pour fermer ce tag*/
-  const icone = document.createElement("i");
-  icone.classList.add("tags__tag__cross");
-  icone.classList.add("bi");
-  icone.classList.add("bi-x-circle");
-  icone.classList.add("ml-3");
-  icone.classList.add("my-auto");
-  icone.setAttribute("aria-hidden", true);
+  const icone = Dom.getIcone([
+    "tags__tag__cross",
+    "bi",
+    "bi-x-circle",
+    "ml-3",
+    "my-auto",
+  ]);
+
   // Ajouter la croix au tag
   aTag.append(icone);
   // Ajouter l'évènement pour faire disparaitre l'étiquette avec ss croix
