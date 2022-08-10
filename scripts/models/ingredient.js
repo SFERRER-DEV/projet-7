@@ -4,7 +4,6 @@ export default class Ingredient {
    * @param {number} quantity quantité d'unité de l'ingrédient
    * @param {string} unit unité de l'ingrédient
    */
-
   constructor(ingredient, quantity = 0, unit = "") {
     /** @type {string} _ingredient nom de l'ingrédient */
     this._ingredient = ingredient;

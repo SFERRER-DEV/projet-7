@@ -18,17 +18,17 @@ export function recipeFactory(aRecipe) {
    */
   function getRecipeCardDOM() {
     /** @const {HTMLDivElement} - l'élement html article qui contient la card */
-    const article = document.createElement("article");
+    // avec la classe BEM et des classes bootstrap pour un affichage responsive
+    const article = Dom.getArticle([
+      "card-recipe",
+      "col-sm-6",
+      "col-lg-4",
+      "my-2",
+      "px-2",
+    ]);
 
     // Ce data attribut permet de marquer cette HTML Card pour l'identifier
     article.setAttribute("data-id", id);
-    // Ajouter la classe BEM
-    article.classList.add("card-recipe");
-    // Ajouter des classes bootstrap pour un affichage responsive
-    article.classList.add("col-sm-6");
-    article.classList.add("col-lg-4");
-    article.classList.add("my-2");
-    article.classList.add("px-2");
 
     /** @type {HTMLDivElement} une zone grise foncée */
     const grey = Dom.getDiv([
@@ -40,7 +40,7 @@ export function recipeFactory(aRecipe) {
       "px-1",
     ]);
 
-    // Ajouter la zone grise foncée
+    // Ajouter la zone grise dans l'article
     article.appendChild(grey);
 
     /** @type {HTMLDivElement} le conteneur du nom de la recette, de ses ingrédients et de la description des étapes */
@@ -53,7 +53,7 @@ export function recipeFactory(aRecipe) {
     ]);
 
     /** @type {HTMLDivElement} le titre html de la recette avec son temps de réalisation*/
-    const title = getRecipeTitle(aRecipe.name, aRecipe.time);
+    const title = getRecipeTitle(aRecipe.name, aRecipe.time); // (I)
 
     /** @type {HTMLDivElement} le conteneur du nom de la recette, de ses ingrédients et de la description des étapes */
     const recipeElements = Dom.getDiv([
@@ -64,19 +64,21 @@ export function recipeFactory(aRecipe) {
       "m-0",
     ]);
 
-    /** @type {} */
-    const ingredients = getIngredients(aRecipe.ingredients);
+    /** @type {HTMLElement} une liste ul et ses items pour afficher les ingrédients */
+    const ingredients = getIngredients(aRecipe.ingredients); // (II)
 
     /** @type {HTMLParagraphElement} la description des étapes pour réaliser la recette */
+    const description = getDescription(aRecipe.description); // (III)
 
-    const description = getDescription(aRecipe.description);
-
-    //
-    recipeBody.appendChild(title);
-    recipeElements.appendChild(ingredients);
-    recipeElements.appendChild(description);
+    // Ajouter le titre au corps de la recette
+    recipeBody.appendChild(title); // (I)
+    // Ajouter la liste des ingrédients dans un conteneur div
+    recipeElements.appendChild(ingredients); // (II)
+    // Ajouter les description dans un conteneur div
+    recipeElements.appendChild(description); // (III)
+    // Ajouter le conteneur avec les ingrédients et la description au corps de la recette
     recipeBody.appendChild(recipeElements);
-    //
+    // Ajouter le corps de la recette à l'article
     article.appendChild(recipeBody);
 
     return article;
@@ -112,8 +114,6 @@ function getRecipeTitle(recipeTitle, recipeTime) {
     "my-auto",
   ]);
 
-  divParent.appendChild(title);
-
   /** @type {HTMLSpanElement} le temps de réalisation de la recette */
   const timeToMake = Dom.getSpan(
     [
@@ -125,6 +125,7 @@ function getRecipeTitle(recipeTitle, recipeTime) {
     ],
     `${recipeTime} min`
   );
+
   /** @type {HTMLElement} - balise de texte pour contenir l'icone horloge */
   const icone = Dom.getIcone([
     "card-recipe__body__heading__time__clock",
@@ -133,10 +134,13 @@ function getRecipeTitle(recipeTitle, recipeTime) {
     "mr-2",
     "my-auto",
   ]);
-  // Ajouter devant le temps en mn
+
+  // Ajouter l'horloge devant le temps en mn
   timeToMake.prepend(icone);
+
   // Ajouter le nom de la recette
   divParent.appendChild(title);
+
   // Ajouter le temps de réalisation
   divParent.appendChild(timeToMake);
 
