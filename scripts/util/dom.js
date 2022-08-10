@@ -95,14 +95,16 @@ export const getIcone = (strClasses = "") => {
  */
 const _setBalise = (balise, oneOrSomeClasses, strText = "") => {
   // classe peut être une simple chaine ou un tableau de chaines de caractères
-  if (oneOrSomeClasses !== undefined) {
-    if (Array.isArray(oneOrSomeClasses) && oneOrSomeClasses.length) {
-      // ajouter toutes les classes à la balise html
-      _setClasses(balise, oneOrSomeClasses);
-    } else if (oneOrSomeClasses !== "") {
-      // il n'y a qu'une classe à ajouter
-      balise.classList.add(oneOrSomeClasses);
-    }
+  if (
+    oneOrSomeClasses !== undefined &&
+    Array.isArray(oneOrSomeClasses) &&
+    oneOrSomeClasses.length
+  ) {
+    // ajouter toutes les classes à la balise html
+    _setClasses(balise, oneOrSomeClasses);
+  } else if (oneOrSomeClasses !== undefined && oneOrSomeClasses !== "") {
+    // il n'y a qu'une classe à ajouter
+    balise.classList.add(oneOrSomeClasses);
   }
 
   if (strText !== undefined && strText !== "") {
