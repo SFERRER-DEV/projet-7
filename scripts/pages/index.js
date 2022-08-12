@@ -111,6 +111,38 @@ function displayData(recipes) {
 }
 
 /**
+ * Ajouter les évènement de recherche
+ */
+const addSearchEvents = () => {
+  /** @type {HTMLInputElement} la zone de texte pour la recherche globale */
+  const searchInput = document.getElementById("search-input");
+  searchInput.addEventListener("input", (event) => {
+    // La recherche ne commence que quand l'utilisateur rentre 3 caractères dans cette zone de saisie
+    if (event.currentTarget.value.length >= 3) {
+      searchRecipes(event);
+    }
+  });
+
+  /** @type {HTMLElement} le formulaire de recherche globale */
+  const searchForm = document.getElementById("search-form");
+  searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    // La recherche ne commence que quand l'utilisateur rentre 3 caractères dans la seule zone de saisie du formulaire
+    if (event.currentTarget.querySelector(".form-control").value.length >= 3) {
+      searchRecipes(event);
+    }
+  });
+};
+
+/**
+ *
+ * @param {Event} event
+ */
+function searchRecipes(event) {
+  console.log(event);
+}
+
+/**
  * Point d'entrée de l'application
  * Obtenir les données de manière asynchrone et
  * les afficher
@@ -132,8 +164,11 @@ function init() {
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
   dropdown.displayListItem(listAppliances, Recipe.allAppliances);
 
-  // Ajouter les évènements des dropdowns
+  // Ajouter les évènements des dropdowns (UI open/close)
   addDropdownToggleEvents();
+
+  // Ajoute les évènements de recherche
+  addSearchEvents();
 
   /** @type {Array<Recipe>} un tableau avec toutes les recettes connues */
   const allRecipes = singletonRecipesApi.getDataRecipes();

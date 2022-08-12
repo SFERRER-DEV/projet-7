@@ -20,13 +20,15 @@
     </header>
     <main class="container px-0">
         <!-- le formulaire de recherche -->
-        <form class="form-search row col">
+        <form id="search-form" class="form-search row col">
             <div class="input-group">
-                <input id="search" type="text" autocomplete="off" class="form-control col-11 bg-light border-0"
+                <input id="search-input" type="text" autocomplete="off" class="form-control bg-light border-0"
                     placeholder="Rechercher une recette" />
-                <button type="button" class="btn btn-default col-1 bg-light" aria-label="">
-                    <i class="bi-search" aria-hidden="true"></i>
-                </button>
+                <div class="input-group-append">
+                    <button type="submit" class="btn bg-light">
+                        <i class="bi-search" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
         </form>
         <!-- la ligne des étiquettes -->
