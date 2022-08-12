@@ -18,6 +18,8 @@ export default class Recipe {
   constructor(id, name, servings, time, description, appliance = "") {
     /** @type {number} identifiant de la recette */
     this._id = id;
+    /** @type {Object} la recette entière au format json */
+    this._json = null;
     /** @type {string} nom de la recette */
     this._name = name;
     /** @type {number} nombre de portions */
@@ -93,6 +95,16 @@ export default class Recipe {
   }
 
   /**
+   * @property {Object} La recette dans le format JSON
+   */
+  get json() {
+    return this._json;
+  }
+  set json(value) {
+    this._json = value;
+  }
+
+  /**
    * @property {Set} allIngredients la collection de tous les ingredients connus dans toutes les recettes
    */
   static get allIngredients() {
@@ -149,24 +161,27 @@ export default class Recipe {
    * Méthode statique pour instancier une recette à partir d'un
    * objet JSON.
    *
-   * @param {Object} obj données au format JSON
+   * @param {Object} data données au format JSON
    * @returns {Recipe} rec un objet recette typé Recipe
    */
-  static createRecipe(obj) {
+  static createRecipe(data) {
     /** @type {Recipe} Un objet recette typé Recipe instancier à partir des données json */
     let rec = new Recipe(
-      obj.id,
-      obj.name,
-      obj.servings,
-      obj.time,
-      obj.description,
-      obj.appliance
+      data.id,
+      data.name,
+      data.servings,
+      data.time,
+      data.description,
+      data.appliance
     );
+
+    // Conserver la recette entière au format JSON
+    rec.json = data;
 
     /** @type {Ingredient} Un objet ingrédient typé Ingredient instancier à partir des données json */
     let ing;
     // Parcourir tous les ingrédients contenus dans l'objet JSON
-    obj.ingredients.forEach(function (data) {
+    data.ingredients.forEach(function (data) {
       // Instancier l'objet ingrédient à partir des données lues
       ing = Ingredient.createIngredient(data);
       // Ajouter l'objet Ingredient dans la collection des ingrédients de la recette
@@ -175,7 +190,7 @@ export default class Recipe {
     });
 
     // Parcourir tous les ustensiles contenus dans l'objet JSON
-    obj.ustensils.forEach(function (item) {
+    data.ustensils.forEach(function (item) {
       // Ajouter le nom de l'ustensile dans la collection des ustensiles de la recette
       rec.addUstensil(item);
       // Ajouter le nom de l'ustensile dans la liste de tous les ustensile uniques

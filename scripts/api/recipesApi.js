@@ -42,8 +42,9 @@ export class RecipesApi {
    * @param {Object} data - les données au format JSON
    */
   setDataRecipes(data) {
+    // Parcourir tous les objets JSON
     data.forEach((obj) => {
-      /** @type {Recipe} Un objet de type Recette instancié à partir des données json*/
+      /** @type {Recipe} Un objet de type Recette instancié à partir des données JSON */
       let rec = Recipe.createRecipe(obj);
       // Ajouter un objet de type Recipe au tableau
       this._data.push(rec);
@@ -67,7 +68,7 @@ export class RecipesApi {
    *
    * @returns {Object} une liste d'objets JSON
    */
-  _getAllRecipes() {
+  _getAllRecipesJson() {
     /** @type {Object} toutes les recettes converties en json */
     let jsonRecipes;
 
@@ -81,8 +82,8 @@ export class RecipesApi {
 /** @type {RecipesApi} - l'objet unique RecipesApi */
 const singletonRecipesApi = new RecipesApi();
 
-// Renseigner le tableau en mémoire dans ce singleton avec toutes les recettes du fichier javascript des recettes
-singletonRecipesApi.setDataRecipes(singletonRecipesApi._getAllRecipes());
+// Crée le tableau en mémoire dans ce singleton avec toutes les recettes contenues dans le fichier javascript
+singletonRecipesApi.setDataRecipes(singletonRecipesApi._getAllRecipesJson());
 // Geler ce singleton
 Object.freeze(singletonRecipesApi);
 
