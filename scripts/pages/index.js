@@ -6,6 +6,10 @@ import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
 import * as facRecipe from "./../factories/recipe.js";
 // Importer les fonctions utilitaires pour gérer les listes de filtres
 import * as dropdown from "./../util/dropdown.js";
+// Importer les fonctions utilitaires pour créer des éléments du DOM
+import * as Dom from "./../util/dom.js";
+// Importer les fonctions de recherche
+import * as search from "./../util/search.js";
 /**
  * Ajouter un évènement à chaqu'un des boutons ouvrant les listes déroulantes
  * add events to show dropdown list for click toggle button, focus, and blur
@@ -86,61 +90,86 @@ function displayData(recipes) {
   let i = 0;
   /** @type {HTMLDivElement} le conteneur html pour les recettes */
   const parent = document.getElementById("recipes");
-
-  try {
-    // Parcourir la liste des recettes
-    recipes.forEach((rec) => {
-      i++;
-      /** @type {[number, Object]} une fonction pour fabriquer la html card d'une recette */
-      const recipeModel = facRecipe.recipeFactory(rec);
-      /** @type {HTMLElement} un article contenant une recette complète */
-      const recipeCardDOM = recipeModel.getRecipeCardDOM();
-      // Ajouter cette html card fabriquée pour l'afficher dans la page
-      parent.appendChild(recipeCardDOM);
-      // Sortir de la boucle rapidement pour les tests
-      if (i == 999) throw "fin";
-    });
-  } catch (error) {
-    console.log(error);
+  // Toujours enlever les recettes avant d'en afficher à nouveau
+  parent.replaceChildren();
+  // il y a des recettes à afficher
+  if (Array.isArray(recipes) && recipes.length) {
+    console.log(`Nombre de recettes: ${recipes.length}`);
+    try {
+      // Parcourir la liste des recettes
+      recipes.forEach((rec) => {
+        i++;
+        /** @type {[number, Object]} une fonction pour fabriquer la html card d'une recette */
+        const recipeModel = facRecipe.recipeFactory(rec);
+        /** @type {HTMLElement} un article contenant une recette complète */
+        const recipeCardDOM = recipeModel.getRecipeCardDOM();
+        // Ajouter cette html card fabriquée pour l'afficher dans la page
+        parent.appendChild(recipeCardDOM);
+        // Sortir de la boucle rapidement pour les tests
+        if (i == 999) throw "fin";
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    /** @type {HTMLParagraphElement} message aucune recette trouvée */
+    const para = Dom.getPara(
+      ["recipes__empty", "m-3"],
+      "Aucune recette trouvée"
+    );
+    // Ajouter ce paragraphe pour l'afficher dans la page
+    parent.appendChild(para);
   }
-
-  console.log(`Nombre de recettes: ${recipes.length}`);
-  console.log(`Ingrédients trouvés: ${Recipe.allIngredients.size}`);
-  console.log(`Ustensiles trouvés: ${Recipe.allUstensils.size}`);
-  console.log(`Electoménager trouvé: ${Recipe.allAppliances.size}`);
 }
 
 /**
  * Ajouter les évènement de recherche
  */
 const addSearchEvents = () => {
+  /** @type string le texte saisi dans la zone de recherche par l'utilisateur */
+  let needle = "";
   /** @type {HTMLInputElement} la zone de texte pour la recherche globale */
   const searchInput = document.getElementById("search-input");
+  // Ecouter les caractères saisis dans la zone de texte
   searchInput.addEventListener("input", (event) => {
-    // La recherche ne commence que quand l'utilisateur rentre 3 caractères dans cette zone de saisie
-    if (event.currentTarget.value.length >= 3) {
-      searchRecipes(event);
+    // le texte recherché
+    needle = event.currentTarget.value;
+    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
+    if (needle.length >= 3) {
+      /** @type {Array<Recipe>} un tableau de recettes filtrées par la recherche */
+      const found = search.findRecipes(needle);
+      // Afficher le résultat de la recherche
+      displayData(found);
+    } else {
+      /** @type {HTMLParagraphElement} paragraphe affichant qu'aucune recette n'a été trouvée*/
+      const empty = document.querySelector(".recipes__empty");
+      if (empty !== null) {
+        // Afficher toutes les recettes connues
+        displayData(singletonRecipesApi.getDataRecipes());
+      }
     }
   });
 
   /** @type {HTMLElement} le formulaire de recherche globale */
   const searchForm = document.getElementById("search-form");
+  // Ecouter la soumission du formulaire
   searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    // La recherche ne commence que quand l'utilisateur rentre 3 caractères dans la seule zone de saisie du formulaire
-    if (event.currentTarget.querySelector(".form-control").value.length >= 3) {
-      searchRecipes(event);
+    needle = event.currentTarget.querySelector(".form-control").value;
+    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
+    if (needle.length >= 3) {
+      /** @type {Array<Recipe>} un tableau de recettes filtrées par la recherche */
+      const found = search.findRecipes(needle);
+      // Afficher le résultat de la recherche
+      displayData(found);
+    } else {
+      // Effacer les caractères saisis
+      event.currentTarget.querySelector(".form-control").value = "";
+      // Afficher toutes les recettes connues
+      displayData(singletonRecipesApi.getDataRecipes());
     }
   });
 };
-
-/**
- *
- * @param {Event} event
- */
-function searchRecipes(event) {
-  console.log(event);
-}
 
 /**
  * Point d'entrée de l'application
@@ -172,6 +201,12 @@ function init() {
 
   /** @type {Array<Recipe>} un tableau avec toutes les recettes connues */
   const allRecipes = singletonRecipesApi.getDataRecipes();
+
+  // Afficher le nombre d'ingredients, d'ustensiles et d'électroménager mémorisés dans les variables statiques
+  // des objets recette de la classe Recipe
+  console.log(`Ingrédients trouvés: ${Recipe.allIngredients.size}`);
+  console.log(`Ustensiles trouvés: ${Recipe.allUstensils.size}`);
+  console.log(`Electoménager trouvé: ${Recipe.allAppliances.size}`);
 
   // Afficher les données
   displayData(allRecipes);
