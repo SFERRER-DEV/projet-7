@@ -133,7 +133,7 @@ const addSearchEvents = () => {
   // Ecouter les caractères saisis dans la zone de texte
   searchInput.addEventListener("input", (event) => {
     // le texte recherché
-    needle = event.currentTarget.value;
+    needle = event.currentTarget.value.trim();
     // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
     if (needle.length >= 3) {
       /** @type {Array<Recipe>} un tableau de recettes filtrées par la recherche */
@@ -143,8 +143,16 @@ const addSearchEvents = () => {
     } else {
       /** @type {HTMLParagraphElement} paragraphe affichant qu'aucune recette n'a été trouvée*/
       const empty = document.querySelector(".recipes__empty");
-      if (empty !== null) {
-        // Afficher toutes les recettes connues
+      /** @type {NodeList} tous les articles recettes affichés dans la page*/
+      const articles = document.querySelectorAll(
+        "#recipes article.card-recipe"
+      );
+      // Si toutes les recettes connues ne sont pas affichés à l'écran ..
+      if (
+        empty !== null ||
+        articles.length !== singletonRecipesApi.getDataRecipes().length
+      ) {
+        // .. lors afficher toutes les recettes connues
         displayData(singletonRecipesApi.getDataRecipes());
       }
     }
