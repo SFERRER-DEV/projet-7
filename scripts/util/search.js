@@ -1,7 +1,7 @@
 // Importer le singleton API et sa classe
 import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
 /**
- * Algorithme 2 : Recherche globale des recettes
+ * Algorithme 1 : Recherche globale des recettes
  *
  * Trouver un texte dans :
  * - le titre
@@ -19,42 +19,20 @@ export function findRecipes(needle) {
   /** @type {Array<Recipe>} un tableau de recettes qui sont filtrées par la recherche */
   let someRecipes = [];
 
-  const regex = new RegExp(`\\b${needle}`, "i");
+  /** @type {Object} recherche motif de mot complet en ignorant la casse des lettres */
+  const regex = new RegExp(`\\b${needle}`, "i"); // La recherche s'arrête dés l'élément trouvé
 
-  /** @type {number} le nombre de recettes connues */
-  let i = allRecipes.length;
-
-  // Parcourir toutes les recettes
-  while (i > 0) {
-    // Chercher dans le nom de la recette
-    if (regex.test(allRecipes[allRecipes.length - i].name)) {
-      // Cette recette correspond à la recherche
-      someRecipes.push(allRecipes[allRecipes.length - i]);
-      i--;
-      continue;
-    } else {
-      // Chercher dans la description de la recette
-      if (regex.test(allRecipes[allRecipes.length - i].description)) {
-        // Cette recette correspond à la recherche
-        someRecipes.push(allRecipes[allRecipes.length - i]);
-        i--;
-        continue;
-      } else {
-        // Parcourir tous les ingrédients stockés dans une structure Map de la recette lue
-        /** @type {Ingredient} les valeurs de la Map sont des objets du type Ingredient */
-        let v;
-        for (v of allRecipes[allRecipes.length - i].ingredients.values()) {
-          // Chercher dans le nom d'un ingredient
-          if (regex.test(v.ingredient)) {
-            // Cette recette correspond à la recherche
-            someRecipes.push(allRecipes[allRecipes.length - i]);
-            break;
-          }
-        }
-      }
-    }
-    i--;
-  }
+  // Obtenir le tableau des recettes filtrées à partir de toutes les recettes
+  someRecipes = allRecipes.filter(function (item) {
+    // La recherche globale utilise le nom et la description de la recette
+    // et le nom de tous ses ingrédients.
+    return (
+      regex.test(item.name) ||
+      regex.test(item.description) ||
+      // Applatir le nom des ingrédients d'une recette
+      regex.test(Array.from(item.ingredients.values()).toString())
+    );
+  });
 
   // Renvoyer les recettes filtrées
   return someRecipes;
