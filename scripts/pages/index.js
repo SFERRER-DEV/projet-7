@@ -1,15 +1,16 @@
 // Importer la classe Recette
 import Recipe from "../models/recipe.js";
 // Importer le singleton API et sa classe
-import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
+import singletonRecipesApi from "./../api/recipesApi.js";
 // Importer la fabrique de recette
 import * as facRecipe from "./../factories/recipe.js";
 // Importer les fonctions utilitaires pour gérer les listes de filtres
 import * as dropdown from "./../util/dropdown.js";
 // Importer les fonctions utilitaires pour créer des éléments du DOM
 import * as Dom from "./../util/dom.js";
-// Importer les fonctions de recherche
+// Importer les fonctions de la recherche globale
 import * as search from "./../util/search.js";
+
 /**
  * Ajouter un évènement à chaqu'un des boutons ouvrant les listes déroulantes
  * add events to show dropdown list for click toggle button, focus, and blur
@@ -86,8 +87,6 @@ function closeAllDropdowns() {
  * @param {Array<Recipe>} recipes - une liste de recettes
  */
 function displayData(recipes) {
-  /** @type {number} un compteur pour sotir de la boucle */
-  let i = 0;
   /** @type {HTMLDivElement} le conteneur html pour les recettes */
   const parent = document.getElementById("recipes");
   // Toujours enlever les recettes avant d'en afficher à nouveau
@@ -98,7 +97,6 @@ function displayData(recipes) {
     try {
       // Parcourir la liste des recettes
       recipes.forEach((rec) => {
-        i++;
         /** @type {[number, Object]} une fonction pour fabriquer la html card d'une recette */
         const recipeModel = facRecipe.recipeFactory(rec);
         /** @type {HTMLElement} un article contenant une recette complète */

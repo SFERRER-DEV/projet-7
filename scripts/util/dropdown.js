@@ -1,5 +1,10 @@
 // Importer les fonctions utilitaires pour créer des éléments du DOM
 import * as Dom from "./../util/dom.js";
+// Importer les fonctions de la recherche globale
+import * as search from "./../util/search.js";
+// Importer les fonctions des recherches par tags
+import * as searchTags from "./../util/searchtags.js";
+
 /**
  * Assembler dans une liste hmtl ul les éléments stockés
  * dauns une collection Set pour les ingrédients, les ustensiles
@@ -19,6 +24,7 @@ export function displayListItem(aList, someItems) {
 
   // Trier sur place par ordre ascendant la liste des items
   sortSet(someItems);
+
   // Parcourir les items ...
   someItems.forEach((item) => {
     listItem = document.createElement("li");
@@ -38,7 +44,9 @@ export function displayListItem(aList, someItems) {
 }
 
 /**
- * Cliquer sur un mot clé dans une des listes
+ * Cliquer sur un mot clé dans une des listes ingredients, ustensiles
+ * ou électroménager afficher un tag bleu, rouge ou vert
+ * et lancer le filtre par les tags des recettes
  *
  * @param {Event} event un évènement click sur un list-item bleu, rouge, vert
  */
@@ -73,8 +81,11 @@ function clickListItem(event) {
   // Ajouter l'évènement pour faire disparaitre l'étiquette avec ss croix
   aTag.addEventListener("click", (event) => closeTag(event));
 
-  // Ajouter cette html card fabriquée pour l'afficher dans la page
+  // Ajouter ce tag pour l'afficher sur la ligne des tags
   parent.appendChild(aTag);
+
+  // Filtrer les recettes à partir des tags sélectionnés et affichés
+  filterByTags();
 }
 
 /**
@@ -89,6 +100,9 @@ function closeTag(event) {
   const tag = event.currentTarget;
   // faire disparaitre l'étiquette
   parent.removeChild(tag);
+
+  // Filtrer les recettes à partir des tags sélectionnés et affichés
+  filterByTags();
 }
 
 /**
@@ -116,8 +130,8 @@ function sortSet(set) {
 
 /**
  * A partir d'une collection de recettes
- * déterminer tous ses ingrédients uniques, ses ustensiles unqiue
- * et l'électroménager unique détetectés
+ * déterminer tous ses ingrédients uniques, ses ustensiles uniques
+ * et l'électroménager unique
  *
  * @param {Array<Recipe>} recipes un tableau de recettes filtrées
  * @returns {Set} ingredients la collection d'ingredients uniques des recettes filtrées
@@ -155,4 +169,61 @@ export const getAnyTags = (recipes) => {
   const appliances = new Set(recipes.map((r) => r.appliance));
 
   return { ingredients, ustensils, appliances };
+};
+
+/**
+ * Obtenir un tableau d'objets pour créer les filtres
+ * à partir des tags affichés depuis leurs HTMLSpanElements
+ * bleu, rouge ou vert
+ *
+ * @returns @type {Array<Object>} la liste des tags séléctionnés pour filtrer
+ */
+const getFilters = () => {
+  /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
+  let filters = [];
+
+  /** @type {HTMLDivElement} le conteneur html des étiquettes de filtre */
+  const parent = document.getElementById("tags");
+
+  /** @type {NodeList} la collection des HTMLSpanElements affichés contenant les tags */
+  const allTags = parent.querySelectorAll("#tags span.tags__tag");
+
+  // Lancer le filtre par les tags si il y a des tags affichés
+  if (allTags.length > 0) {
+    // Créer un tableau d'objets pour le filtre des tags à partir des HTMLSpanElements
+    allTags.forEach(function (currentValue) {
+      filters = [
+        ...filters,
+        { list: currentValue.dataset.type, item: currentValue.textContent },
+      ];
+    });
+  }
+
+  return filters;
+};
+
+/**
+ * Filtrer une collection de recette à partir
+ * d'un tableau d'objets de tags
+ *
+ */
+const filterByTags = () => {
+  console.log("=== Filter by Tags ===");
+  /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
+  const filters = getFilters();
+  // Parcourir la liste des filtres
+  filters.forEach((filtre) => {
+    // Déterminer le type de filtre à appliquer à l'item
+    switch (filtre.list) {
+      case "appliances":
+        searchTags.findByAppliance(filtre.item, []);
+        break;
+      case "ingredients":
+        searchTags.findByIngredient(filtre.item, []);
+        break;
+      case "ustensils":
+        searchTags.findByUstensil(filtre.item, []);
+        break;
+    }
+  });
 };
