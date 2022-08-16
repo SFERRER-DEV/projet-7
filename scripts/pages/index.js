@@ -105,9 +105,9 @@ function displayData(recipes) {
         const recipeCardDOM = recipeModel.getRecipeCardDOM();
         // Ajouter cette html card fabriquée pour l'afficher dans la page
         parent.appendChild(recipeCardDOM);
-        // Sortir de la boucle rapidement pour les tests
-        if (i == 999) throw "fin";
       });
+      // Afficher les listes déroulantes pour filtrer par ingredients, ustensiles, électroménage
+      displayTags(recipes);
     } catch (error) {
       console.log(error);
     }
@@ -120,6 +120,35 @@ function displayData(recipes) {
     // Ajouter ce paragraphe pour l'afficher dans la page
     parent.appendChild(para);
   }
+}
+
+/**
+ *
+ * @param {Array<Recipe>} recipes - une liste de recettes
+ */
+function displayTags(recipes) {
+  // Obtenir la liste des ingrédients, des ustensiles et de l'électroménager de cette collection de recette
+  let {
+    /** @type {Set} */ ingredients,
+    /** @type {Set} */ ustensils,
+    /** @type {Set} */ appliances,
+  } = dropdown.getAnyTags(recipes);
+
+  /** @type {HTMLElement} liste ul des ingrédients */
+  const listIngredients = document.getElementById("listIngredients");
+  /** @type {HTMLElement} liste ul des ustensiles */
+  const listUstensils = document.getElementById("listUstensils");
+  /** @type {HTMLElement} liste ul de l'électroménager */
+  const listAppliances = document.getElementById("listAppliances");
+
+  // Renseigner une dropdown avec les ingrédients uniques provenant dynamiquement des données
+  dropdown.displayListItem(listIngredients, ingredients);
+
+  // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
+  dropdown.displayListItem(listUstensils, ustensils);
+
+  // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
+  dropdown.displayListItem(listAppliances, appliances);
 }
 
 /**
@@ -186,20 +215,20 @@ const addSearchEvents = () => {
  */
 function init() {
   /** @type {HTMLElement} liste ul des ingrédients */
-  const listIngredients = document.getElementById("listIngredients");
+  //const listIngredients = document.getElementById("listIngredients");
   /** @type {HTMLElement} liste ul des ustensiles */
-  const listUstensils = document.getElementById("listUstensils");
+  //const listUstensils = document.getElementById("listUstensils");
   /** @type {HTMLElement} liste ul de l'électroménager */
-  const listAppliances = document.getElementById("listAppliances");
+  //const listAppliances = document.getElementById("listAppliances");
 
   // Renseigner une dropdown avec les ingrédients uniques provenant dynamiquement des données
-  dropdown.displayListItem(listIngredients, Recipe.allIngredients);
+  //dropdown.displayListItem(listIngredients, Recipe.allIngredients);
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  dropdown.displayListItem(listUstensils, Recipe.allUstensils);
+  //dropdown.displayListItem(listUstensils, Recipe.allUstensils);
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  dropdown.displayListItem(listAppliances, Recipe.allAppliances);
+  //dropdown.displayListItem(listAppliances, Recipe.allAppliances);
 
   // Ajouter les évènements des dropdowns (UI open/close)
   addDropdownToggleEvents();

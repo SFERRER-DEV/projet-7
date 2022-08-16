@@ -173,10 +173,12 @@ function getDescription(aDescription) {
  * Monter la liste hmtl des ingrédients de la recette
  * avec les quantités et les unités
  *
- * @param {Map<Ingredient>} aIngredients - Structure dont la clé est le nom ingrédient et dont la valeur est un objet de type Ingredient
- * @returns {HTMLElement} la liste non ordonnéé des ingrégient
+ * @param {Map} ingredients - Structure dont la clé est le nom ingrédient et la valeur est un objet de type Ingredient
+ * @returns {HTMLElement} la liste des ingrédients
+ *
+ * Dom.capitalizeFirstLetter(item)
  */
-function getIngredients(aIngredients) {
+function getIngredients(ingredients) {
   /** @type {HTMLElement} la liste des ingrédients */
   const listIngredients = document.createElement("ul");
   //
@@ -192,8 +194,19 @@ function getIngredients(aIngredients) {
   let text;
   /** @type {HTMLSpanElement}  */
   let span;
-  // Parcourir tous les ingrédients de la structure Map ...
-  aIngredients.forEach((value, key) => {
+
+  /** @type {Map} Les ingrédients passés en paramètre ne sont pas triés */
+  const sorted = new Map( // La Map ingredients a pour valeur un objet de la classe Ingredient
+    [...ingredients].sort(
+      (
+        a,
+        b // avec une propriété .ingredient qui stocke
+      ) => (a[1].ingredient > b[1].ingredient ? 1 : -1) // le nom de l'ingredient
+    )
+  );
+
+  // Parcourir tous les ingrédients de la structure Map triée
+  sorted.forEach((value, key) => {
     item = document.createElement("li");
     // Ajouter la classe BEM
     item.classList.add("card-recipe__body__elements__list__ingredient");

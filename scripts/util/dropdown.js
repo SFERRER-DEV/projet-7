@@ -23,7 +23,7 @@ export function displayListItem(aList, someItems) {
   someItems.forEach((item) => {
     listItem = document.createElement("li");
     // Créer le noeud avec le texte de l'items
-    text = document.createTextNode(`${capitalizeFirstLetter(item)}`);
+    text = document.createTextNode(`${Dom.capitalizeFirstLetter(item)}`);
     // Ajouter le texte à l'élément de liste
     listItem.appendChild(text);
     // Ce data attribut permet de marquer l'item pour identifier son type
@@ -115,10 +115,44 @@ function sortSet(set) {
 }
 
 /**
+ * A partir d'une collection de recettes
+ * déterminer tous ses ingrédients uniques, ses ustensiles unqiue
+ * et l'électroménager unique détetectés
  *
- * @param {string} string
- * @returns  {string} Foo
+ * @param {Array<Recipe>} recipes un tableau de recettes filtrées
+ * @returns {Set} ingredients la collection d'ingredients uniques des recettes filtrées
+ * @returns {Set} ustensils la collection d'ustensiles unsiques des recettes filtrées
+ * @returns {Set} appliances une collection d'électroménager uniques des recettes filtrées
  */
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-}
+export const getAnyTags = (recipes) => {
+  /** @type{Array<string>} tous les ingredients détectés dans cette collection de recettes */
+  const i = recipes
+    .map(function (item) {
+      // item.ingredients est une structure Map
+      return Array.from(item.ingredients.values()).map(function (item) {
+        // dont les valeurs
+        return item.ingredient; // sont des objets de la classe Ingredient avec
+      }); // une propriété nommée .ingredient qui stocke le nom de l'ingrédient
+    })
+    .reduce(function (a, b) {
+      return a.concat(b);
+    });
+  /** @type {Set} la liste des ingrédients uniques */
+  const ingredients = new Set(i);
+
+  /** @type{Array<string>} tous les ustensiles détectés dans cette collection de recettes */
+  const u = recipes
+    .map(function (item) {
+      return Array.from(item.ustensils.values());
+    })
+    .reduce(function (a, b) {
+      return a.concat(b);
+    });
+  /** @type {Set} la liste des ustensiles uniques */
+  const ustensils = new Set(u);
+
+  /** @type {Set} la liste des appareils électroménager uniques */
+  const appliances = new Set(recipes.map((r) => r.appliance));
+
+  return { ingredients, ustensils, appliances };
+};

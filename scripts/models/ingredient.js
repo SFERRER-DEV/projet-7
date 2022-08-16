@@ -14,10 +14,13 @@ export default class Ingredient {
   }
 
   /**
-   * @property {string} ingredient nom de l'ingrédient
+   * @property {string} ingredient nom de l'ingrédient mis en forme
    */
   get ingredient() {
-    return this._ingredient;
+    return (
+      this._ingredient.charAt(0).toUpperCase() +
+      this._ingredient.slice(1).toLowerCase()
+    );
   }
 
   /**

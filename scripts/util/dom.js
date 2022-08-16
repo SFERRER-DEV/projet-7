@@ -144,3 +144,14 @@ const _setClasses = (balise, classes) => {
 
   return balise;
 };
+
+/**
+ * Mette la première lettre d'une chaine de caractère en Majuscule
+ * et le reste en miniscule
+ *
+ * @param {string} string
+ * @returns  {string} Foo
+ */
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
