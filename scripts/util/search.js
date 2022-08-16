@@ -1,5 +1,5 @@
-// Importer le singleton API et sa classe
-import singletonRecipesApi, { RecipesApi } from "./../api/recipesApi.js";
+// Importer le singleton API
+import singletonRecipesApi from "./../api/recipesApi.js";
 /**
  * Algorithme 1 : Recherche globale des recettes
  *

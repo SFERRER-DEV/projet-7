@@ -27,8 +27,17 @@ export function findByAppliance(needle, recipes) {
 
 export function findByIngredient(needle, recipes) {
   console.log(`findByIngredient: ${needle}`);
+  /** @type {Array<Recipe>} un tableau de recettes qui sont filtrées par la recherche */
+  let someRecipes = [];
+
+  // Renvoyer les recettes filtrées
+  return someRecipes;
 }
 
 export function findByUstensil(needle, recipes) {
   console.log(`findByUstensil: ${needle}`);
+  let someRecipes = [];
+
+  // Renvoyer les recettes filtrées
+  return someRecipes;
 }

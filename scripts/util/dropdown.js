@@ -1,9 +1,7 @@
 // Importer les fonctions utilitaires pour créer des éléments du DOM
 import * as Dom from "./../util/dom.js";
-// Importer les fonctions de la recherche globale
-import * as search from "./../util/search.js";
-// Importer les fonctions des recherches par tags
-import * as searchTags from "./../util/searchtags.js";
+// Importer les fonctions utilitaires pour gérer les listes de filtres
+import { filterBySearchAndTags } from "./../pages/index.js";
 
 /**
  * Assembler dans une liste hmtl ul les éléments stockés
@@ -22,25 +20,34 @@ export function displayListItem(aList, someItems) {
   // Supprimer tous les items li existants
   aList.replaceChildren();
 
-  // Trier sur place par ordre ascendant la liste des items
-  sortSet(someItems);
-
-  // Parcourir les items ...
-  someItems.forEach((item) => {
+  if (someItems.size === 0) {
     listItem = document.createElement("li");
     // Créer le noeud avec le texte de l'items
-    text = document.createTextNode(item);
+    text = document.createTextNode("Aucun élément");
     // Ajouter le texte à l'élément de liste
     listItem.appendChild(text);
-    // Ce data attribut permet de marquer l'item pour identifier son type
-    listItem.setAttribute("data-type", aList.dataset.type);
-    listItem.addEventListener("click", (event) => clickListItem(event));
     // Ajouter l'élément à la liste concernée
     aList.appendChild(listItem);
-    // Raz
-    item = null;
-    text = null;
-  });
+  } else {
+    // Trier sur place par ordre ascendant la liste des items
+    sortSet(someItems);
+    // Parcourir les items ...
+    someItems.forEach((item) => {
+      listItem = document.createElement("li");
+      // Créer le noeud avec le texte de l'items
+      text = document.createTextNode(item);
+      // Ajouter le texte à l'élément de liste
+      listItem.appendChild(text);
+      // Ce data attribut permet de marquer l'item pour identifier son type
+      listItem.setAttribute("data-type", aList.dataset.type);
+      listItem.addEventListener("click", (event) => clickListItem(event));
+      // Ajouter l'élément à la liste concernée
+      aList.appendChild(listItem);
+      // Raz
+      item = null;
+      text = null;
+    });
+  }
 }
 
 /**
@@ -85,7 +92,7 @@ function clickListItem(event) {
   parent.appendChild(aTag);
 
   // Filtrer les recettes à partir des tags sélectionnés et affichés
-  filterByTags();
+  filterBySearchAndTags();
 }
 
 /**
@@ -102,7 +109,7 @@ function closeTag(event) {
   parent.removeChild(tag);
 
   // Filtrer les recettes à partir des tags sélectionnés et affichés
-  filterByTags();
+  filterBySearchAndTags();
 }
 
 /**
@@ -133,40 +140,48 @@ function sortSet(set) {
  * déterminer tous ses ingrédients uniques, ses ustensiles uniques
  * et l'électroménager unique
  *
- * @param {Array<Recipe>} recipes un tableau de recettes filtrées
+ * @param {Array<Recipe>} recipes un tableau de recettes
  * @returns {Set} ingredients la collection d'ingredients uniques des recettes filtrées
  * @returns {Set} ustensils la collection d'ustensiles unsiques des recettes filtrées
  * @returns {Set} appliances une collection d'électroménager uniques des recettes filtrées
  */
 export const getAnyTags = (recipes) => {
-  /** @type{Array<string>} tous les ingredients détectés dans cette collection de recettes */
-  const i = recipes
-    .map(function (item) {
-      // item.ingredients est une structure Map
-      return Array.from(item.ingredients.values()).map(function (item) {
-        // dont les valeurs
-        return item.ingredient; // sont des objets de la classe Ingredient avec
-      }); // une propriété nommée .ingredient qui stocke le nom de l'ingrédient
-    })
-    .reduce(function (a, b) {
-      return a.concat(b);
-    });
   /** @type {Set} la liste des ingrédients uniques */
-  const ingredients = new Set(i);
-
-  /** @type{Array<string>} tous les ustensiles détectés dans cette collection de recettes */
-  const u = recipes
-    .map(function (item) {
-      return Array.from(item.ustensils.values());
-    })
-    .reduce(function (a, b) {
-      return a.concat(b);
-    });
+  let ingredients = new Set();
   /** @type {Set} la liste des ustensiles uniques */
-  const ustensils = new Set(u);
-
+  let ustensils = new Set();
   /** @type {Set} la liste des appareils électroménager uniques */
-  const appliances = new Set(recipes.map((r) => r.appliance));
+  let appliances = new Set();
+
+  // Si il n'y a pas de recettes renvoyer des Set vides d'ingredients, ustensiles, électroménager
+  if (recipes.length > 0) {
+    /** @type{Array<string>} tous les ingredients détectés dans cette collection de recettes */
+    const i = recipes
+      .map(function (item) {
+        // item.ingredients est une structure Map
+        return Array.from(item.ingredients.values()).map(function (item) {
+          // dont les valeurs
+          return item.ingredient; // sont des objets de la classe Ingredient avec
+        }); // une propriété nommée .ingredient qui stocke le nom de l'ingrédient
+      })
+      .reduce(function (a, b) {
+        return a.concat(b);
+      });
+    ingredients = new Set(i);
+
+    /** @type{Array<string>} tous les ustensiles détectés dans cette collection de recettes */
+    const u = recipes
+      .map(function (item) {
+        return Array.from(item.ustensils.values());
+      })
+      .reduce(function (a, b) {
+        return a.concat(b);
+      });
+    ustensils = new Set(u);
+
+    /** @type {Set} la liste des appareils électroménager uniques */
+    appliances = new Set(recipes.map((r) => r.appliance));
+  }
 
   return { ingredients, ustensils, appliances };
 };
@@ -178,7 +193,7 @@ export const getAnyTags = (recipes) => {
  *
  * @returns @type {Array<Object>} la liste des tags séléctionnés pour filtrer
  */
-const getFilters = () => {
+export const getFilters = () => {
   /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
   let filters = [];
 
@@ -200,30 +215,4 @@ const getFilters = () => {
   }
 
   return filters;
-};
-
-/**
- * Filtrer une collection de recette à partir
- * d'un tableau d'objets de tags
- *
- */
-const filterByTags = () => {
-  console.log("=== Filter by Tags ===");
-  /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
-  const filters = getFilters();
-  // Parcourir la liste des filtres
-  filters.forEach((filtre) => {
-    // Déterminer le type de filtre à appliquer à l'item
-    switch (filtre.list) {
-      case "appliances":
-        searchTags.findByAppliance(filtre.item, []);
-        break;
-      case "ingredients":
-        searchTags.findByIngredient(filtre.item, []);
-        break;
-      case "ustensils":
-        searchTags.findByUstensil(filtre.item, []);
-        break;
-    }
-  });
 };

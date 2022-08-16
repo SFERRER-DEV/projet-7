@@ -123,6 +123,11 @@ html {
 .filters__dropdown.show ul li {
   word-wrap: break-word;
   width: 33%;
+}
+
+.filters__dropdown.show ul li[data-type="appliances"],
+.filters__dropdown.show ul li[data-type="ingredients"],
+.filters__dropdown.show ul li[data-type="ustensils"] {
   cursor: pointer;
 }
 

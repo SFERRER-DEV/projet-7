@@ -1,15 +1,17 @@
 // Importer la classe Recette
 import Recipe from "../models/recipe.js";
-// Importer le singleton API et sa classe
+// Importer le singleton API
 import singletonRecipesApi from "./../api/recipesApi.js";
 // Importer la fabrique de recette
 import * as facRecipe from "./../factories/recipe.js";
 // Importer les fonctions utilitaires pour gérer les listes de filtres
-import * as dropdown from "./../util/dropdown.js";
+import { getFilters, getAnyTags, displayListItem } from "./../util/dropdown.js";
 // Importer les fonctions utilitaires pour créer des éléments du DOM
 import * as Dom from "./../util/dom.js";
 // Importer les fonctions de la recherche globale
 import * as search from "./../util/search.js";
+// Importer les fonctions des recherches par tags
+import * as searchTags from "./../util/searchtags.js";
 
 /**
  * Ajouter un évènement à chaqu'un des boutons ouvrant les listes déroulantes
@@ -104,8 +106,6 @@ function displayData(recipes) {
         // Ajouter cette html card fabriquée pour l'afficher dans la page
         parent.appendChild(recipeCardDOM);
       });
-      // Afficher les listes déroulantes pour filtrer par ingredients, ustensiles, électroménage
-      displayTags(recipes);
     } catch (error) {
       console.log(error);
     }
@@ -118,6 +118,8 @@ function displayData(recipes) {
     // Ajouter ce paragraphe pour l'afficher dans la page
     parent.appendChild(para);
   }
+  // Afficher les listes déroulantes pour filtrer par ingredients, ustensiles, électroménage
+  displayTags(recipes);
 }
 
 /**
@@ -130,7 +132,7 @@ function displayTags(recipes) {
     /** @type {Set} */ ingredients,
     /** @type {Set} */ ustensils,
     /** @type {Set} */ appliances,
-  } = dropdown.getAnyTags(recipes);
+  } = getAnyTags(recipes);
 
   /** @type {HTMLElement} liste ul des ingrédients */
   const listIngredients = document.getElementById("listIngredients");
@@ -140,49 +142,25 @@ function displayTags(recipes) {
   const listAppliances = document.getElementById("listAppliances");
 
   // Renseigner une dropdown avec les ingrédients uniques provenant dynamiquement des données
-  dropdown.displayListItem(listIngredients, ingredients);
+  displayListItem(listIngredients, ingredients);
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  dropdown.displayListItem(listUstensils, ustensils);
+  displayListItem(listUstensils, ustensils);
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  dropdown.displayListItem(listAppliances, appliances);
+  displayListItem(listAppliances, appliances);
 }
 
 /**
- * Ajouter les évènement de recherche
+ * Ajouter les évènement de recherche globale
  */
 const addSearchEvents = () => {
-  /** @type string le texte saisi dans la zone de recherche par l'utilisateur */
-  let needle = "";
   /** @type {HTMLInputElement} la zone de texte pour la recherche globale */
   const searchInput = document.getElementById("search-input");
   // Ecouter les caractères saisis dans la zone de texte
   searchInput.addEventListener("input", (event) => {
-    // le texte recherché
-    needle = event.currentTarget.value.trim();
-    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
-    if (needle.length >= 3) {
-      /** @type {Array<Recipe>} un tableau de recettes filtrées par la recherche */
-      const found = search.findRecipes(needle);
-      // Afficher le résultat de la recherche
-      displayData(found);
-    } else {
-      /** @type {HTMLParagraphElement} paragraphe affichant qu'aucune recette n'a été trouvée*/
-      const empty = document.querySelector(".recipes__empty");
-      /** @type {NodeList} tous les articles recettes affichés dans la page*/
-      const articles = document.querySelectorAll(
-        "#recipes article.card-recipe"
-      );
-      // Si toutes les recettes connues ne sont pas affichés à l'écran ..
-      if (
-        empty !== null ||
-        articles.length !== singletonRecipesApi.getDataRecipes().length
-      ) {
-        // .. lors afficher toutes les recettes connues
-        displayData(singletonRecipesApi.getDataRecipes());
-      }
-    }
+    // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
+    filterBySearchAndTags();
   });
 
   /** @type {HTMLElement} le formulaire de recherche globale */
@@ -190,20 +168,54 @@ const addSearchEvents = () => {
   // Ecouter la soumission du formulaire
   searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    needle = event.currentTarget.querySelector(".form-control").value;
-    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
-    if (needle.length >= 3) {
-      /** @type {Array<Recipe>} un tableau de recettes filtrées par la recherche */
-      const found = search.findRecipes(needle);
-      // Afficher le résultat de la recherche
-      displayData(found);
-    } else {
-      // Effacer les caractères saisis
-      event.currentTarget.querySelector(".form-control").value = "";
-      // Afficher toutes les recettes connues
-      displayData(singletonRecipesApi.getDataRecipes());
+    // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
+    filterBySearchAndTags();
+  });
+};
+
+/**
+ * Filtrer une collection de recette à partir
+ * d'un tableau d'objets de filtres d'étiquettes
+ *
+ */
+export const filterBySearchAndTags = () => {
+  console.log("=== Filter by Search & Tags ===");
+
+  /** @type {Array<Recipe>} un tableau de recettes filtrées */
+  let found;
+
+  /** @type {HTMLInputElement} la zone de texte pour la recherche globale */
+  const searchInput = document.getElementById("search-input");
+  /** @type string le texte saisi dans la zone de recherche par l'utilisateur */
+  const needle = searchInput.value.trim();
+  // Obtenir les recettes affichées via une nouvelle recherche globale
+  // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
+  if (needle !== "" && needle.length >= 3) {
+    found = search.findRecipes(needle); // Effectuer une recherche globale
+  } else {
+    found = singletonRecipesApi.getDataRecipes(); // ou prendre toutes les recettes connues
+  }
+
+  /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
+  const filters = getFilters();
+  // Parcourir la liste des filtres
+  filters.forEach((filtre) => {
+    // Déterminer le type de filtre à appliquer à l'item
+    switch (filtre.list) {
+      case "appliances":
+        found = searchTags.findByAppliance(filtre.item, found);
+        break;
+      case "ingredients":
+        //found = searchTags.findByIngredient(filtre.item, found);
+        break;
+      case "ustensils":
+        //found = searchTags.findByUstensil(filtre.item, found);
+        break;
     }
   });
+
+  // Afficher le résultat de la recherche
+  displayData(found);
 };
 
 /**
