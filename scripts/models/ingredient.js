@@ -17,10 +17,7 @@ export default class Ingredient {
    * @property {string} ingredient nom de l'ingrédient mis en forme
    */
   get ingredient() {
-    return (
-      this._ingredient.charAt(0).toUpperCase() +
-      this._ingredient.slice(1).toLowerCase()
-    );
+    return Ingredient.capitalizeFirstLetter(this._ingredient);
   }
 
   /**
@@ -68,5 +65,16 @@ export default class Ingredient {
     const ing = new Ingredient(obj.ingredient, quantity, unit);
 
     return ing;
+  }
+
+  /**
+   * Mette la première lettre d'une chaine de caractère en Majuscule
+   * et le reste en miniscule
+   *
+   * @param {string} string
+   * @returns  {string} Foo
+   */
+  static capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   }
 }

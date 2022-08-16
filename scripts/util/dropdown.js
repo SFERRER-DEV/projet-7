@@ -23,7 +23,7 @@ export function displayListItem(aList, someItems) {
   someItems.forEach((item) => {
     listItem = document.createElement("li");
     // Créer le noeud avec le texte de l'items
-    text = document.createTextNode(`${Dom.capitalizeFirstLetter(item)}`);
+    text = document.createTextNode(item);
     // Ajouter le texte à l'élément de liste
     listItem.appendChild(text);
     // Ce data attribut permet de marquer l'item pour identifier son type

@@ -175,8 +175,6 @@ function getDescription(aDescription) {
  *
  * @param {Map} ingredients - Structure dont la clé est le nom ingrédient et la valeur est un objet de type Ingredient
  * @returns {HTMLElement} la liste des ingrédients
- *
- * Dom.capitalizeFirstLetter(item)
  */
 function getIngredients(ingredients) {
   /** @type {HTMLElement} la liste des ingrédients */
