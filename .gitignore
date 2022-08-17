@@ -351,3 +351,6 @@ MigrationBackup/
 .vscode/launch.json
 .vscode/settings.json
 scripts/pages/.eslintrc.json
+
+#
+*.dia.autosave

@@ -11,3 +11,5 @@ Réaliser le site de recettes de cuisine les petits plats pour la formation Open
 
 - Voir le site sur github pages : [Openclassrooms projet 7: Les petits plats](https://sferrer-dev.github.io/projet-7/index.html)
 - Code Climate: [Codebase summary projet 7](https://codeclimate.com/github/SFERRER-DEV/projet-7)
+- Recherche globale: [Algorithme 1](https://github.com/SFERRER-DEV/projet-7/blob/v0.5.1/scripts/util/search.js)
+- Recherche globale: [Algorithme 2 alternatif](https://github.com/SFERRER-DEV/projet-7/blob/v0.5.2/scripts/util/search.js)

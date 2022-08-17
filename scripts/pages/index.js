@@ -4,87 +4,29 @@ import Recipe from "../models/recipe.js";
 import singletonRecipesApi from "./../api/recipesApi.js";
 // Importer la fabrique de recette
 import * as facRecipe from "./../factories/recipe.js";
-// Importer les fonctions utilitaires pour gérer les listes de filtres
-import { getFilters, getAnyTags, displayListItem } from "./../util/dropdown.js";
+// Importer les fonctions utilitaires pour gérer les custom dropdown
+import {
+  getFilters,
+  getAnyTags,
+  displayListItem,
+  addDropdownToggleEvents,
+} from "./../util/dropdown.js";
 // Importer les fonctions utilitaires pour créer des éléments du DOM
 import * as Dom from "./../util/dom.js";
 // Importer les fonctions de la recherche globale
-import * as search from "./../util/search.js";
-// Importer les fonctions des recherches par tags
-import * as searchTags from "./../util/searchtags.js";
-
-/**
- * Ajouter un évènement à chaqu'un des boutons ouvrant les listes déroulantes
- * add events to show dropdown list for click toggle button, focus, and blur
- *
- */
-function addDropdownToggleEvents() {
-  /** @type {NodeList} une collection avec les trois boutons pour ouvrir fermer les trois listes déroulantes */
-  const toggleButtons = document.querySelectorAll(".filters__dropdown__toggle");
-
-  // Parcourir les trois boutons toggle
-  toggleButtons.forEach((elm) => {
-    /** @type {string} l'attribut data-type de ce bouton toggle contient le nom du type des éléments à rechercher */
-    const searchName = elm.dataset.type;
-    /** @type {string} l'identifiant d'une custom liste déroulante correspondant à ce bouton toggle actuellement lu */
-    const idDropbox = `${searchName}-dropdown`;
-
-    /** @type {HTMLDivElement} l'élémént div contenant toute la custom iste déroulante */
-    const dropdown = document.querySelector(`#${idDropbox}`);
-    // Ecouter l'évènement click de toggle bouton pour ...
-    elm.addEventListener("click", () => {
-      if (dropdown.classList.contains("show")) {
-        dropdown.classList.remove("show"); // ... enlever la classe show à sa dropdown
-        dropdown.classList.add("col-3");
-        dropdown.classList.remove("col-5");
-      } else {
-        closeAllDropdowns();
-        dropdown.classList.add("show"); //  ... ou ajouter la classe show à sa dropdown
-        dropdown.classList.add("col-5");
-        dropdown.classList.remove("col-3");
-      }
-    });
-  });
-}
-
-/**
- * Cliquer en dehors d'une liste custom dropdown
- * ferme toute liste ouverte
- *
- * @param {*} event
- */
-window.onclick = function (event) {
-  if (
-    !event.target.matches([
-      ".filters__dropdown",
-      ".filters__dropdown ul",
-      ".filters__dropdown ul li",
-      ".filters__dropdown__toggle",
-      ".filters__dropdown__toggle i",
-      ".filters__dropdown__search",
-    ])
-  ) {
-    closeAllDropdowns();
-  }
-};
-
-/**
- * Fermer toutes les listes custom dropdown
- * avec reinitialisation de la largeur
- */
-function closeAllDropdowns() {
-  const openedDropdowns = document.querySelectorAll(".show");
-  openedDropdowns.forEach((dropdown) => {
-    dropdown.classList.remove("show");
-    dropdown.classList.remove("col-5");
-    dropdown.classList.add("col-3");
-  });
-}
+import { findRecipes } from "./../util/search.js";
+// Importer les fonctions des recherche par étiquettes
+import {
+  findByAppliance,
+  findByIngredient,
+  findByUstensil,
+} from "./../util/searchtags.js";
 
 /**
  * Afficher les données des recettes
- * dans des html cards sur la page d'accueil en utilisant
- * la factory Recipe
+ * dans des html cards.
+ * Ajoute les mot clés de rechercher dans les custom dropdown
+ * pour les recettes.
  *
  * @param {Array<Recipe>} recipes - une liste de recettes
  */
@@ -118,11 +60,13 @@ function displayData(recipes) {
     // Ajouter ce paragraphe pour l'afficher dans la page
     parent.appendChild(para);
   }
-  // Afficher les listes déroulantes pour filtrer par ingredients, ustensiles, électroménage
+  // Afficher dans les listes déroulantes les mots clés pour filtrer les ingredients, les ustensiles, l' électroménage
   displayTags(recipes);
 }
 
 /**
+ * Afficher les mots clés de recherche dans les custom dropdown
+ * en les détectant à partir d'une liste de recettes
  *
  * @param {Array<Recipe>} recipes - une liste de recettes
  */
@@ -152,13 +96,14 @@ function displayTags(recipes) {
 }
 
 /**
- * Ajouter les évènement de recherche globale
+ * Ajouter les évènements de recherche globale
+ *
  */
 const addSearchEvents = () => {
   /** @type {HTMLInputElement} la zone de texte pour la recherche globale */
   const searchInput = document.getElementById("search-input");
   // Ecouter les caractères saisis dans la zone de texte
-  searchInput.addEventListener("input", (event) => {
+  searchInput.addEventListener("input", () => {
     // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
     filterBySearchAndTags();
   });
@@ -191,7 +136,7 @@ export const filterBySearchAndTags = () => {
   // Obtenir les recettes affichées via une nouvelle recherche globale
   // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
   if (needle !== "" && needle.length >= 3) {
-    found = search.findRecipes(needle); // Effectuer une recherche globale
+    found = findRecipes(needle); // Effectuer une recherche globale
   } else {
     found = singletonRecipesApi.getDataRecipes(); // ou prendre toutes les recettes connues
   }
@@ -203,13 +148,13 @@ export const filterBySearchAndTags = () => {
     // Déterminer le type de filtre à appliquer à l'item
     switch (filtre.list) {
       case "appliances":
-        found = searchTags.findByAppliance(filtre.item, found);
+        found = findByAppliance(filtre.item, found);
         break;
       case "ingredients":
-        //found = searchTags.findByIngredient(filtre.item, found);
+        //found = findByIngredient(filtre.item, found);
         break;
       case "ustensils":
-        //found = searchTags.findByUstensil(filtre.item, found);
+        //found = findByUstensil(filtre.item, found);
         break;
     }
   });
@@ -224,28 +169,6 @@ export const filterBySearchAndTags = () => {
  * les afficher
  */
 function init() {
-  /** @type {HTMLElement} liste ul des ingrédients */
-  //const listIngredients = document.getElementById("listIngredients");
-  /** @type {HTMLElement} liste ul des ustensiles */
-  //const listUstensils = document.getElementById("listUstensils");
-  /** @type {HTMLElement} liste ul de l'électroménager */
-  //const listAppliances = document.getElementById("listAppliances");
-
-  // Renseigner une dropdown avec les ingrédients uniques provenant dynamiquement des données
-  //dropdown.displayListItem(listIngredients, Recipe.allIngredients);
-
-  // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  //dropdown.displayListItem(listUstensils, Recipe.allUstensils);
-
-  // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  //dropdown.displayListItem(listAppliances, Recipe.allAppliances);
-
-  // Ajouter les évènements des dropdowns (UI open/close)
-  addDropdownToggleEvents();
-
-  // Ajoute les évènements de recherche
-  addSearchEvents();
-
   /** @type {Array<Recipe>} un tableau avec toutes les recettes connues */
   const allRecipes = singletonRecipesApi.getDataRecipes();
 
@@ -255,8 +178,14 @@ function init() {
   console.log(`Ustensiles trouvés: ${Recipe.allUstensils.size}`);
   console.log(`Electoménager trouvé: ${Recipe.allAppliances.size}`);
 
-  // Afficher les données
+  // Afficher les données des recettes
   displayData(allRecipes);
+
+  // Ajouter les évènements des dropdowns (UI open/close)
+  addDropdownToggleEvents();
+
+  // Ajoute les évènements de recherche
+  addSearchEvents();
 }
 
 init();

@@ -13,7 +13,7 @@ import singletonRecipesApi from "./../api/recipesApi.js";
  * @returns Array<Recipe> la liste des objets recettes trouvés
  */
 export function findRecipes(needle) {
-  console.log(`=== Recherche globale avec: "${needle}" ===`);
+  console.log(`findRecipes: ${needle}`);
 
   /** @type {Array<Recipe>} un tableau avec toutes les recettes connues */
   const allRecipes = singletonRecipesApi.getDataRecipes();
