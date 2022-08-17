@@ -132,7 +132,19 @@ export default class Recipe {
    * @returns {string} chaine de caractères
    */
   toString() {
-    return `${this._id}-${this._name} (${this._ingredients.size} ingredients, ${this._ustensils.size} ustensils) ${this._appliance}`;
+    let str = "";
+    str += `${this._id}-${this._name}`;
+    str += "\n";
+    str += `- ingredients ${this._ingredients.size}: `;
+    str += Array.from(this._ingredients.values()).toString();
+    str += "\n";
+    str += `- ustensils ${this._ustensils.size}: `;
+    str += Array.from(this._ustensils.values()).toString();
+    str += "\n";
+    str += `- appliance: ${this._appliance}`;
+    str += "\n";
+    str += this._description;
+    return str;
   }
 
   /**

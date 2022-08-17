@@ -47,6 +47,8 @@ function displayData(recipes) {
         const recipeCardDOM = recipeModel.getRecipeCardDOM();
         // Ajouter cette html card fabriquée pour l'afficher dans la page
         parent.appendChild(recipeCardDOM);
+        // Imprimer sur la console les recettes
+        console.log(rec.toString());
       });
     } catch (error) {
       console.log(error);
@@ -96,7 +98,7 @@ function displayTags(recipes) {
 }
 
 /**
- * Ajouter les évènements de recherche globale
+ * Ajouter les évènements de recherche
  */
 const addSearchEvents = () => {
   /** @type string le texte saisi dans la zone de recherche par l'utilisateur */
@@ -111,6 +113,9 @@ const addSearchEvents = () => {
     if (needle.length >= 3) {
       // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
       filterBySearchAndTags();
+    } else if (needle.trim().length < 3 && !areAllRecipesDiplayed()) {
+      // Si toutes les recettes ne sont pas affichées alors les afficher à la demande !
+      displayData(singletonRecipesApi.getDataRecipes());
     }
   });
 
@@ -126,8 +131,7 @@ const addSearchEvents = () => {
       // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
       filterBySearchAndTags();
     } else if (!areAllRecipesDiplayed()) {
-      // Si toutes les recettes ne sont pas affichées ...
-      // alors les afficher la demande !
+      // Si toutes les recettes ne sont pas affichées alors les afficher à la demande !
       displayData(singletonRecipesApi.getDataRecipes());
     }
   });
@@ -166,10 +170,10 @@ export const filterBySearchAndTags = () => {
         found = findByAppliance(filtre.item, found);
         break;
       case "ingredients":
-        //found = findByIngredient(filtre.item, found);
+        found = findByIngredient(filtre.item, found);
         break;
       case "ustensils":
-        //found = findByUstensil(filtre.item, found);
+        found = findByUstensil(filtre.item, found);
         break;
     }
   });
@@ -215,7 +219,7 @@ function init() {
   // Ajouter les évènements des dropdowns (UI open/close)
   addDropdownToggleEvents();
 
-  // Ajoute les évènements de recherche
+  // Ajouter les évènements de recherche
   addSearchEvents();
 }
 
