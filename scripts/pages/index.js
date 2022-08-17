@@ -97,15 +97,21 @@ function displayTags(recipes) {
 
 /**
  * Ajouter les évènements de recherche globale
- *
  */
 const addSearchEvents = () => {
+  /** @type string le texte saisi dans la zone de recherche par l'utilisateur */
+  let needle = "";
   /** @type {HTMLInputElement} la zone de texte pour la recherche globale */
   const searchInput = document.getElementById("search-input");
   // Ecouter les caractères saisis dans la zone de texte
-  searchInput.addEventListener("input", () => {
-    // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
-    filterBySearchAndTags();
+  searchInput.addEventListener("input", (event) => {
+    // le texte recherché pour l'évènement clavier
+    needle = event.currentTarget.value.trim();
+    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
+    if (needle.length >= 3) {
+      // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
+      filterBySearchAndTags();
+    }
   });
 
   /** @type {HTMLElement} le formulaire de recherche globale */
@@ -113,15 +119,24 @@ const addSearchEvents = () => {
   // Ecouter la soumission du formulaire
   searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
-    filterBySearchAndTags();
+    // le texte recherché pour l'évènement soumettre
+    needle = event.currentTarget.querySelector(".form-control").value;
+    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
+    if (needle.length >= 3) {
+      // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
+      filterBySearchAndTags();
+    } else if (!areAllRecipesDiplayed()) {
+      // Si toutes les recettes ne sont pas affichées ...
+      // alors les afficher la demande !
+      displayData(singletonRecipesApi.getDataRecipes());
+    }
   });
 };
 
 /**
- * Filtrer une collection de recette à partir
- * d'un tableau d'objets de filtres d'étiquettes
- *
+ * Effectuer une recherche globale de recettes,
+ * Filtrer ces recettes à partir d'étiquettes
+ * depuis tableau d'objets de filtres
  */
 export const filterBySearchAndTags = () => {
   console.log("=== Filter by Search & Tags ===");
@@ -164,9 +179,25 @@ export const filterBySearchAndTags = () => {
 };
 
 /**
+ * Est-ce que toutes les recettes connues sont affichées
+ * dans la page ?
+ *
+ * @returns {boolean} repondre à la question
+ */
+const areAllRecipesDiplayed = () => {
+  /** @type {NodeList} toutes les Html Cards recettes affichées dans la page */
+  const articles = document.querySelectorAll("#recipes article.card-recipe");
+  /** @type {number} le nombre de recettes actuellement affichées */
+  const displayedRecipes = articles.length;
+  /** @type {number} le nombre de recettes connues */
+  const allRecipes = singletonRecipesApi.getDataRecipes().length;
+
+  return displayedRecipes === allRecipes;
+};
+
+/**
  * Point d'entrée de l'application
- * Obtenir les données de manière asynchrone et
- * les afficher
+ * Obtenir les données et les afficher
  */
 function init() {
   /** @type {Array<Recipe>} un tableau avec toutes les recettes connues */

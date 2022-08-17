@@ -156,7 +156,7 @@ export const getAnyTags = (recipes) => {
  * à partir des tags affichés depuis leurs HTMLSpanElements
  * bleu, rouge ou vert
  *
- * @returns @type {Array<Object>} la liste des tags séléctionnés pour filtrer
+ * @returns {Array<Object>} la liste des tags séléctionnés pour filtrer
  */
 export const getFilters = () => {
   /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
