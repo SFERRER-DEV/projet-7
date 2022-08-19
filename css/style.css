@@ -92,6 +92,7 @@ html {
   z-index: 100;
   border-radius: 0;
   min-width: 32px;
+  color: white;
 }
 
 .filters__dropdown__toggle:focus {

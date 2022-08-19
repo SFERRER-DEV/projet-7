@@ -87,36 +87,44 @@ function displayTags(recipes) {
   /** @type {HTMLElement} liste ul de l'électroménager */
   const listAppliances = document.getElementById("listAppliances");
 
+  /** @type {Array<Object>} la liste des étiquettes séléctionnées et affichées */
+  const filters = getFilters();
+
   // Renseigner une dropdown avec les ingrédients uniques provenant dynamiquement des données
-  displayListItem(listIngredients, ingredients);
+  // et founir ses étiquettes de la liste à exclure des ingredients
+  displayListItem(
+    listIngredients,
+    ingredients,
+    filters.filter((tag) => tag.list === "ingredients")
+  );
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  displayListItem(listUstensils, ustensils);
+  // et founir ses étiquettes de la liste à exclure des ustensiles
+  displayListItem(
+    listUstensils,
+    ustensils,
+    filters.filter((tag) => tag.list === "ustensils")
+  );
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  displayListItem(listAppliances, appliances);
+  // et founir ses étiquettes de la liste à exclure de l'électroménager
+  displayListItem(
+    listAppliances,
+    appliances,
+    filters.filter((tag) => tag.list === "appliances")
+  );
 }
 
 /**
  * Ajouter les évènements de recherche
  */
 const addSearchEvents = () => {
-  /** @type string le texte saisi dans la zone de recherche par l'utilisateur */
-  let needle = "";
   /** @type {HTMLInputElement} la zone de texte pour la recherche globale */
   const searchInput = document.getElementById("search-input");
   // Ecouter les caractères saisis dans la zone de texte
-  searchInput.addEventListener("input", (event) => {
-    // le texte recherché pour l'évènement clavier
-    needle = event.currentTarget.value.trim();
-    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
-    if (needle.length >= 3) {
-      // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
-      filterBySearchAndTags();
-    } else if (needle.trim().length < 3 && !areAllRecipesDiplayed()) {
-      // Si toutes les recettes ne sont pas affichées alors les afficher à la demande !
-      displayData(singletonRecipesApi.getDataRecipes());
-    }
+  searchInput.addEventListener("input", () => {
+    // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
+    filterBySearchAndTags();
   });
 
   /** @type {HTMLElement} le formulaire de recherche globale */
@@ -124,16 +132,8 @@ const addSearchEvents = () => {
   // Ecouter la soumission du formulaire
   searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    // le texte recherché pour l'évènement soumettre
-    needle = event.currentTarget.querySelector(".form-control").value;
-    // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
-    if (needle.length >= 3) {
-      // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
-      filterBySearchAndTags();
-    } else if (!areAllRecipesDiplayed()) {
-      // Si toutes les recettes ne sont pas affichées alors les afficher à la demande !
-      displayData(singletonRecipesApi.getDataRecipes());
-    }
+    // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
+    filterBySearchAndTags();
   });
 };
 
@@ -155,14 +155,17 @@ export const filterBySearchAndTags = () => {
   // Obtenir les recettes affichées via une nouvelle recherche globale
   // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
   if (needle !== "" && needle.length >= 3) {
-    found = findRecipes(needle); // Effectuer une recherche globale
+    // Effectuer une recherche globale
+    found = findRecipes(needle);
   } else {
-    found = singletonRecipesApi.getDataRecipes(); // ou prendre toutes les recettes connues
+    // ou prendre toutes les recettes connues
+    found = singletonRecipesApi.getDataRecipes();
   }
 
-  /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
+  /** @type {Array<Object>} la liste des tags séléctionnés et affichés */
   const filters = getFilters();
-  // Parcourir la liste des filtres
+
+  // Parcourir la liste des tags des filtres sélectionnés
   filters.forEach((filtre) => {
     // Déterminer le type de filtre à appliquer à l'item
     switch (filtre.list) {
