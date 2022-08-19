@@ -87,14 +87,32 @@ function displayTags(recipes) {
   /** @type {HTMLElement} liste ul de l'électroménager */
   const listAppliances = document.getElementById("listAppliances");
 
+  /** @type {Array<Object>} la liste des étiquettes séléctionnées et affichées */
+  const filters = getFilters();
+
   // Renseigner une dropdown avec les ingrédients uniques provenant dynamiquement des données
-  displayListItem(listIngredients, ingredients);
+  // et founir ses étiquettes de la liste à exclure des ingredients
+  displayListItem(
+    listIngredients,
+    ingredients,
+    filters.filter((tag) => tag.list === "ingredients")
+  );
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  displayListItem(listUstensils, ustensils);
+  // et founir ses étiquettes de la liste à exclure des ustensiles
+  displayListItem(
+    listUstensils,
+    ustensils,
+    filters.filter((tag) => tag.list === "ustensils")
+  );
 
   // Renseigner une dropdown avec les ustensiles unique provenant dynamiquement des données
-  displayListItem(listAppliances, appliances);
+  // et founir ses étiquettes de la liste à exclure de l'électroménager
+  displayListItem(
+    listAppliances,
+    appliances,
+    filters.filter((tag) => tag.list === "appliances")
+  );
 }
 
 /**
@@ -160,9 +178,10 @@ export const filterBySearchAndTags = () => {
     found = singletonRecipesApi.getDataRecipes(); // ou prendre toutes les recettes connues
   }
 
-  /** @type {Array<Object>} la liste des tags séléctionnés pour filtrer */
+  /** @type {Array<Object>} la liste des tags séléctionnés et affichés */
   const filters = getFilters();
-  // Parcourir la liste des filtres
+
+  // Parcourir la liste des tags des filtres sélectionnés
   filters.forEach((filtre) => {
     // Déterminer le type de filtre à appliquer à l'item
     switch (filtre.list) {

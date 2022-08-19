@@ -60,8 +60,9 @@ export function addDropdownToggleEvents() {
  *
  * @param {HTMLElement} aList une liste html ul
  * @param {Set} someItems une collection d'ingrédients, d'ustensiles ou de l'électroménager
+ * @param {Array<Object>} excludes une liste de filtres obtenue à partir des tag sélectionnés
  */
-export function displayListItem(aList, someItems) {
+export function displayListItem(aList, someItems, excludes) {
   /** @type {HTMLElement} un élément li contenant un ingrédient */
   let listItem;
   /** @type {Node} le texte de l'ingrédient */
@@ -69,6 +70,22 @@ export function displayListItem(aList, someItems) {
 
   // Supprimer tous les items li existants
   aList.replaceChildren();
+
+  // Si il y a des étiquettes séléctionnées et affichées
+  // alors il y a des items à ne pas montrer dans les listes déroulantes
+  if (excludes.length > 0) {
+    // Parcourir une collection d'ingredients, d'ustensiles ou d'électromenager
+    someItems.forEach(
+      function (item) {
+        // this est un tableau à exclure
+        if (this.includes(item)) {
+          someItems.delete(item); // exclure
+        }
+      },
+      // Envoyer dans le scope de la boucle un tableau d'exclusion de libellés de filtres
+      excludes.map((e) => e.item) // Ne prendre que le libellé des filtres
+    );
+  }
 
   if (someItems.size === 0) {
     listItem = document.createElement("li");
@@ -207,19 +224,21 @@ function clickListItem(event) {
   const filterType = event.currentTarget.dataset.type;
   /** @type {string} le texte de l'élément cliqué  */
   const tagText = event.currentTarget.textContent;
+
   console.log(`Click ! ${filterType}: ${tagText}`);
 
-  /** @type {HTMLDivElement} le conteneur html des étiquettes de filtre */
+  /** @type {HTMLDivElement} le conteneur des étiquettes de filtre */
   const parent = document.getElementById("tags");
 
-  /** @type {HTMLSpanElement} un tag bleu, vert ou rouge */
+  /** @type {HTMLSpanElement} une étiquette html bleue, verte ou rouge */
   const aTag = Dom.getSpan(
     ["tags__tag", "px-2", "py-1", "m-1", "my-2", "rounded"],
     `${tagText}`
   );
+  // Typer l'étiquette: ingredient, ustensile, électroménager
   aTag.setAttribute("data-type", filterType);
 
-  /** @type {HTMLElement} - balise pour contenir l'icone croix pour fermer ce tag*/
+  /** @type {HTMLElement} - l'icone croix pour fermer ce tag */
   const icone = Dom.getIcone([
     "tags__tag__cross",
     "bi",
@@ -230,6 +249,7 @@ function clickListItem(event) {
 
   // Ajouter la croix au tag
   aTag.append(icone);
+
   // Ajouter l'évènement pour faire disparaitre l'étiquette avec ss croix
   aTag.addEventListener("click", (event) => closeTag(event));
 
