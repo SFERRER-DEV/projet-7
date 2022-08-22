@@ -28,34 +28,27 @@ export function findBy(str, recipes, filtre) {
   /** @type {Object} recherche par correspodance complète */
   const regex = getRegExp(needle, true);
 
-  switch (filtre) {
-    case "appliances":
-      // Obtenir le tableau des recettes filtrées
-      someRecipes = recipes.filter(function (item) {
-        // les signes diacritiques sont remplacés dans l'électroménager
-        return regex.test(item.appliance.removeDiacritics());
-      });
-      break;
-
-    case "ingredients":
-      // Obtenir le tableau des recettes filtrées
-      someRecipes = recipes.filter(function (item) {
-        /** @type {string} applatir la structure Set contenant les ingrédients */
-        const flatten = Array.from(item.ingredients.values()).toString();
-        // les signes diacritiques sont remplacés dans les ingrédients des recettes
-        return regex.test(flatten.removeDiacritics());
-      });
-      break;
-
-    case "ustensils":
-      // Obtenir le tableau des recettes filtrées
-      someRecipes = recipes.filter(function (item) {
-        /** @type {string} applatir la structure Set contenant les ustensiles */
-        const flatten = Array.from(item.ustensils.values()).toString();
-        // les signes diacritiques sont remplacés dans les ustensiles des recettes
-        return regex.test(flatten.removeDiacritics());
-      });
-      break;
+  if (filtre === "appliances") {
+    // Obtenir le tableau des recettes filtrées
+    someRecipes = recipes.filter(function (item) {
+      // les signes diacritiques sont remplacés dans l'électroménager
+      return regex.test(item.appliance.removeDiacritics());
+    });
+  } else {
+    // Obtenir le tableau des recettes filtrées
+    someRecipes = recipes.filter(function (item) {
+      /** @type {string} applatir une structure Set */
+      let flatten;
+      if (filtre === "ingredients") {
+        // applatir la structure Set contenant les ingrédients
+        flatten = Array.from(item.ingredients.values()).toString();
+      } else if (filtre === "ustensils") {
+        // applatir la structure Set contenant les ustensiles */
+        flatten = Array.from(item.ustensils.values()).toString();
+      }
+      // les signes diacritiques sont remplacés
+      return regex.test(flatten.removeDiacritics());
+    });
   }
 
   // Renvoyer les recettes filtrées
