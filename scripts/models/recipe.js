@@ -79,7 +79,7 @@ export default class Recipe {
    * @property {string} appliance un appareil électroménager nécessaire pour la recette
    */
   get appliance() {
-    return this._appliance;
+    return this._appliance.capitalizeFirstLetter();
   }
 
   /**

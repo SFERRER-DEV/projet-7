@@ -16,11 +16,7 @@ import * as Dom from "./../util/dom.js";
 // Importer les fonctions de la recherche globale
 import { findRecipes } from "./../util/search.js";
 // Importer les fonctions des recherche par étiquettes
-import {
-  findByAppliance,
-  findByIngredient,
-  findByUstensil,
-} from "./../util/searchtags.js";
+import { findBy } from "./../util/searchtags.js";
 
 /**
  * Afficher les données des recettes
@@ -178,17 +174,7 @@ export const filterBySearchAndTags = () => {
   // Parcourir la liste des tags des filtres sélectionnés
   filters.forEach((filtre) => {
     // Déterminer le type de filtre à appliquer à l'item
-    switch (filtre.list) {
-      case "appliances":
-        found = findByAppliance(filtre.item, found);
-        break;
-      case "ingredients":
-        found = findByIngredient(filtre.item, found);
-        break;
-      case "ustensils":
-        found = findByUstensil(filtre.item, found);
-        break;
-    }
+    found = findBy(filtre.item, found, filtre.list);
   });
 
   // Afficher le résultat de la recherche
