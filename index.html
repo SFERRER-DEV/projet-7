@@ -38,13 +38,13 @@
         <div class="filters row mt-4">
             <!-- liste déroulante des ingrédients -->
             <div id="ingredients-dropdown" class="filters__dropdown col-3 ml-2" tabindex="0">
-                <input type="text" name="ingredients" id="dropdown-ingredients" class="filters__dropdown__search"
-                    data-type="ingredients" />
-                <button type="button" id="toggleIngredients" class="btn filters__dropdown__toggle"
+                <input type="text" name="ingredients" id="ingredients-search" class="filters__dropdown__search"
+                    data-type="ingredients" placeholder="Ingrédients" />
+                <button type="button" id="ingredients-toggle" class="btn filters__dropdown__toggle"
                     data-type="ingredients">
                     <i class="bi-chevron-down"></i>
                 </button>
-                <ul id="listIngredients" data-type="ingredients" class="filters__dropdown__ingredients p-3">
+                <ul id="ingredients-list" data-type="ingredients" class="filters__dropdown__ingredients p-3">
                     <li data-type="ingredients">ingredient A</li>
                     <li data-type="ingredients">ingredient B</li>
                     <li data-type="ingredients">ingredient C</li>
@@ -53,13 +53,13 @@
 
             <!-- liste déroulante des appareils de cuisine -->
             <div id="appliances-dropdown" class="filters__dropdown col-3 mx-3" tabindex="0">
-                <input type="text" name="appliances" id="dropdown-appliances" class="filters__dropdown__search"
-                    data-type="appliances" />
-                <button type="button" id="toggleAppliances" class="btn filters__dropdown__toggle"
+                <input type="text" name="appliances" id="appliances-search" class="filters__dropdown__search"
+                    data-type="appliances" placeholder="Appareils" />
+                <button type="button" id="appliances-toggle" class="btn filters__dropdown__toggle"
                     data-type="appliances">
                     <i class="bi-chevron-down"></i>
                 </button>
-                <ul id="listAppliances" data-type="appliances" class="filters__dropdown__appliances p-3">
+                <ul id="appliances-list" data-type="appliances" class="filters__dropdown__appliances p-3">
                     <li data-type="appliances">électroménager</li>
                     <li data-type="appliances">un autre appareil</li>
                 </ul>
@@ -67,12 +67,12 @@
 
             <!-- liste déroulante des ustensiles de cuisine -->
             <div id="ustensils-dropdown" class="filters__dropdown col-3" tabindex="0">
-                <input type="text" name="ustensils" id="dropdown-ustensil" class="filters__dropdown__search"
-                    data-type="ustensils" />
-                <button type="button" id="toggleUstensils" class="btn filters__dropdown__toggle" data-type="ustensils">
+                <input type="text" name="ustensils" id="ustensils-search" class="filters__dropdown__search"
+                    data-type="ustensils" placeholder="Ustensiles" />
+                <button type="button" id="ustensils-toggle" class="btn filters__dropdown__toggle" data-type="ustensils">
                     <i class="bi-chevron-down"></i>
                 </button>
-                <ul id="listUstensils" data-type="ustensils" class="filters__dropdown__ustensils p-3">
+                <ul id="ustensils-list" data-type="ustensils" class="filters__dropdown__ustensils p-3">
                     <li data-type="ustensils">ustensile 1</li>
                     <li data-type="ustensils">ustensile 2</li>
                 </ul>

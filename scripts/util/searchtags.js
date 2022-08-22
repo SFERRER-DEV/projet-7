@@ -1,3 +1,5 @@
+// Importer les fonctions pour travailler avec les chaines de caractères en étendant la class String
+import "./../util/string.js";
 // Importer la fonction pour préparer l'expression rationnelle avec un motif de recherche
 import { getRegExp } from "./../util/regex.js";
 

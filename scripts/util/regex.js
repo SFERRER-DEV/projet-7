@@ -1,10 +1,3 @@
-// Utile étendre la classe String de JS pour
-// supprimer les caractères non alphabétiques et les accents d'une chaîne
-if (!String.prototype.removeDiacritics) {
-  String.prototype.removeDiacritics = function () {
-    return this.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  };
-}
 /**
  * Obtenir une Expression pour les recherches
  *

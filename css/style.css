@@ -77,12 +77,22 @@ html {
   line-height: 2em;
   width: auto;
   flex-grow: 1;
-  padding: 0;
   border: none;
+  color: white;
+  padding-left: 0.5em;
+  text-transform: capitalize;
 }
 
 .filters__dropdown__search:focus {
-  border: none;
+  border-color: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.filters__dropdown__search::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: 1; /* Firefox */
 }
 
 .filters__dropdown__toggle {

@@ -15,9 +15,9 @@ export function addDropdownToggleEvents() {
   // Parcourir les trois boutons toggle
   toggleButtons.forEach((elm) => {
     /** @type {string} l'attribut data-type de ce bouton toggle contient le nom du type des éléments à rechercher */
-    const searchName = elm.dataset.type;
+    const filterType = elm.dataset.type;
     /** @type {string} l'identifiant d'une custom liste déroulante correspondant à ce bouton toggle actuellement lu */
-    const idDropbox = `${searchName}-dropdown`;
+    const idDropbox = `${filterType}-dropdown`;
 
     /** @type {HTMLDivElement} l'élémént div contenant toute la custom iste déroulante */
     const dropdown = document.querySelector(`#${idDropbox}`);
@@ -213,9 +213,10 @@ function closeAllDropdowns() {
 }
 
 /**
- * Cliquer sur un mot clé dans une des listes ingredients, ustensiles
- * ou électroménager afficher un tag bleu, rouge ou vert
- * et lancer le filtre par les tags des recettes
+ * Cliquer sur un item dans une des listes ingredients, ustensiles
+ * ou électroménager ajouter un tag bleu, rouge ou vert dans la zone
+ * des filtres d'étiquettes
+ * et lance le filtre des recettes par les tags
  *
  * @param {Event} event un évènement click sur un list-item bleu, rouge, vert
  */
@@ -255,6 +256,13 @@ function clickListItem(event) {
 
   // Ajouter ce tag pour l'afficher sur la ligne des tags
   parent.appendChild(aTag);
+
+  /** @type {string} l'identifiant du champ de saisi pour la recherche d'un ingrédient, d'un ustensile ou d'un appareil */
+  const idSearch = `${filterType}-search`;
+  /** @type {HTMLFormElement} le champ de saisi */
+  const input = document.getElementById(idSearch);
+  // Remise à blanc de la zone de saisie après l'ajout du tag dans la zone des filtres d'étiquettes
+  input.value = "";
 
   // Filtrer les recettes à partir des tags sélectionnés et affichés
   filterBySearchAndTags();

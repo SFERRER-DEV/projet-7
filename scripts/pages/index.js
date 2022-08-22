@@ -48,7 +48,7 @@ function displayData(recipes) {
         // Ajouter cette html card fabriquée pour l'afficher dans la page
         parent.appendChild(recipeCardDOM);
         // Imprimer sur la console les recettes
-        console.log(rec.toString());
+        //console.log(rec.toString());
       });
     } catch (error) {
       console.log(error);
@@ -81,11 +81,11 @@ function displayTags(recipes) {
   } = getAnyTags(recipes);
 
   /** @type {HTMLElement} liste ul des ingrédients */
-  const listIngredients = document.getElementById("listIngredients");
+  const listIngredients = document.getElementById("ingredients-list");
   /** @type {HTMLElement} liste ul des ustensiles */
-  const listUstensils = document.getElementById("listUstensils");
+  const listUstensils = document.getElementById("ustensils-list");
   /** @type {HTMLElement} liste ul de l'électroménager */
-  const listAppliances = document.getElementById("listAppliances");
+  const listAppliances = document.getElementById("appliances-list");
 
   /** @type {Array<Object>} la liste des étiquettes séléctionnées et affichées */
   const filters = getFilters();
@@ -134,6 +134,16 @@ const addSearchEvents = () => {
     event.preventDefault();
     // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
     filterBySearchAndTags();
+  });
+
+  /** @type {NodeList} les trois zones de saisie utilisées pour restreindre l'affichage des étiquettes dans les dropbox */
+  const dropdowns = document.querySelectorAll(".filters__dropdown__search");
+  // Parcourir les trois boutons toggle
+  dropdowns.forEach((elm) => {
+    elm.addEventListener("input", (event) =>
+      // l'attribut html data-type contient soit ingredients, ustensils, appliances
+      filterFunction(event.currentTarget.dataset.type)
+    );
   });
 };
 
@@ -201,6 +211,64 @@ const areAllRecipesDiplayed = () => {
 
   return displayedRecipes === allRecipes;
 };
+
+/**
+ * Saisir des caratères dans la zone de texte d'une liste déroulante
+ * d'ingrédients, d'ustensiles ou d'électroménager
+ * filtre et restreint l'affichage de ses items à choisir.
+ *
+ * @param {string} filterType - chaine à partir de l'attribut html data-type (ingredients, ustensils ou appliances)
+ */
+function filterFunction(filterType) {
+  /** @type {string} l'identifiant du champ de saisi pour la recherche d'un ingrédient, d'un ustensile ou d'un appareil */
+  const idSearch = `${filterType}-search`;
+  /** @type {HTMLFormElement} le champ de saisi */
+  const input = document.getElementById(idSearch);
+  /** @type {string} */
+  const filter = input.value.trim().toUpperCase();
+
+  /** @type {string} l'identifiant de la liste d'items d'ingrédients, d'ustensiles ou d'appareils */
+  const idList = `${filterType}-list`;
+  /** @type {HTMLElement} la liste de ces items */
+  const ul = document.getElementById(idList);
+  /** @type {HTMLCollection} tous les items de cette liste */
+  const listItems = ul.querySelectorAll("li");
+  listItems.forEach(function (item) {
+    // Certains items pourraient être masqués par une recherche dans l'input de la dropbox
+    item.style.display = "list-item"; // // alors il faut d'assurer de les afficher tous avant de filtrer
+  });
+
+  if (filter.length > 0) {
+    /** @type {string} l'identifiant d'une custom dropbox */
+    const idDropbox = `${filterType}-dropdown`;
+    /** @type {HTMLDivElement} l'élémént div contenant toute la custom dropbox */
+    const dropdown = document.querySelector(`#${idDropbox}`);
+
+    /** @type {string} l'identifiant d'un bouton pour afficher masque la custom dropdox */
+    const idToogle = `${filterType}-toggle`;
+    /** @type {HTMLButtonElement} le bouton pour ouvrir fermer la dropdown */
+    const toggle = document.getElementById(idToogle);
+
+    // Si la dropdown n'est pas ouverte ...
+    if (!dropdown.classList.contains("show")) {
+      toggle.click(); // alors appuyer sur son bouton pour afficher ses items
+    }
+
+    /** @type {string} le nom d'un ingredient, d'un ustensile ou d'un appareil affiché dans la liste */
+    let txtValue;
+    // Parcourir tous les items pour n'afficher que ceux qui correspondent à la saisie
+    for (let i = 0; i < listItems.length; i++) {
+      txtValue = listItems[i].textContent;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        // Afficher un item
+        listItems[i].style.display = "list-item";
+      } else {
+        // Masquer un item qui ne correspond pas au filtre saisi
+        listItems[i].style.display = "none";
+      }
+    }
+  }
+}
 
 /**
  * Point d'entrée de l'application

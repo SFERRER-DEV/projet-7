@@ -1,7 +1,10 @@
+// Importer les fonctions pour travailler avec les chaines de caractères en étendant la class String
+import "./../util/string.js";
 // Importer le singleton API
 import singletonRecipesApi from "./../api/recipesApi.js";
 // Importer la fonction pour préparer l'expression rationnelle avec un motif de recherche
 import { getRegExp } from "./../util/regex.js";
+
 /**
  * Algorithme 1 : Recherche globale des recettes
  *

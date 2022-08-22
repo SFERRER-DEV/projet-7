@@ -31,7 +31,7 @@ export default class Recipe {
     /** @type {string} un appareil électroménager */
     this._appliance = appliance;
     /** @type {string} 1ere lettre en majuscule et le reste en minuscule */
-    const str = Ingredient.capitalizeFirstLetter(appliance);
+    const str = appliance.capitalizeFirstLetter();
     // Ajouter l'électroménager à la collection statique de tout l'électroménager connu
     Recipe._AllAppliances.add(str);
     /** @type {Set} un ensemble d'ingredients uniques*/
@@ -79,7 +79,7 @@ export default class Recipe {
    * @property {string} appliance un appareil électroménager nécessaire pour la recette
    */
   get appliance() {
-    return Ingredient.capitalizeFirstLetter(this._appliance);
+    return this._appliance;
   }
 
   /**
@@ -155,7 +155,7 @@ export default class Recipe {
    */
   addIngredient(ing) {
     /** @type {string} 1ere lettre en majuscule et le reste en minuscule */
-    const str = Ingredient.capitalizeFirstLetter(ing.ingredient);
+    const str = ing.ingredient.capitalizeFirstLetter();
     this._ingredients.set(str, ing); // Map.Key = "Nom de l'ingrédient"
     // Ajouter le nom de l'ingrédient dans la liste de tous les ingredients uniques de toutes les recettes
     Recipe._AllIngredients.add(str);
@@ -169,7 +169,7 @@ export default class Recipe {
    */
   addUstensil(u) {
     /** @type {string} 1ere lettre en majuscule et le reste en minuscule */
-    const str = Ingredient.capitalizeFirstLetter(u);
+    const str = u.capitalizeFirstLetter();
     this._ustensils.add(str);
     // Ajouter aussi le nom de l'ustensile dans la liste de tous les ustensiles uniques connus
     Recipe._AllUstensils.add(str);
