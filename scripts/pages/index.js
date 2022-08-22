@@ -245,7 +245,11 @@ function filterFunction(filterType) {
     // Parcourir tous les items pour n'afficher que ceux qui correspondent à la saisie
     for (let i = 0; i < listItems.length; i++) {
       txtValue = listItems[i].textContent;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      if (txtValue.toLowerCase() === "aucun élément") {
+        // RaB
+        input.value = "";
+        break;
+      } else if (txtValue.toUpperCase().indexOf(filter) > -1) {
         // Afficher un item
         listItems[i].style.display = "list-item";
       } else {
