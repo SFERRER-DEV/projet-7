@@ -133,7 +133,9 @@ export default class Recipe {
    */
   toString() {
     let str = "";
-    str += `${this._id}-${this._name}`;
+    str += `ID: ${this._id}`;
+    str += "\n";
+    str += `${this._name}`;
     str += "\n";
     str += `- ingredients ${this._ingredients.size}: `;
     str += Array.from(this._ingredients.values()).toString();
@@ -144,6 +146,7 @@ export default class Recipe {
     str += `- appliance: ${this._appliance}`;
     str += "\n";
     str += this._description;
+    str += "\n";
     return str;
   }
 

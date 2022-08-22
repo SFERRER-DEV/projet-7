@@ -2,7 +2,9 @@
 // supprimer les caractères non alphabétiques et les accents d'une chaîne
 if (!String.prototype.removeDiacritics) {
   String.prototype.removeDiacritics = function () {
-    return this.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return this.normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[\(\)]/g, ""); // il y a des parenthèses dans les données
   };
 }
 

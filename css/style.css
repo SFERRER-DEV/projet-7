@@ -170,7 +170,13 @@ html {
 .card-recipe {
   height: 480px;
   cursor: pointer;
+  transition: transform 0.2s ease-in;
   /*border: 3px red dotted;*/
+}
+
+.card-recipe:hover {
+  transform: scale(1.025);
+  transition: 0.2s ease-in;
 }
 
 .card-recipe__zone,

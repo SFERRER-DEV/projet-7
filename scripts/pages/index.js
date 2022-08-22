@@ -44,7 +44,9 @@ function displayData(recipes) {
         // Ajouter cette html card fabriquée pour l'afficher dans la page
         parent.appendChild(recipeCardDOM);
         // Imprimer sur la console les recettes
-        //console.log(rec.toString());
+        recipeCardDOM.addEventListener("click", () =>
+          console.log(rec.toString())
+        );
       });
     } catch (error) {
       console.log(error);
@@ -221,7 +223,7 @@ function filterFunction(filterType) {
   const listItems = ul.querySelectorAll("li");
   listItems.forEach(function (item) {
     // Certains items pourraient être masqués par une recherche dans l'input de la dropbox
-    item.style.display = "list-item"; // // alors il faut d'assurer de les afficher tous avant de filtrer
+    item.style.display = "list-item"; // alors il faut d'assurer de les afficher tous avant de filtrer
   });
 
   if (filter.length > 0) {
