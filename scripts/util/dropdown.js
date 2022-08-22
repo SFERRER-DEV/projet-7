@@ -38,16 +38,9 @@ export function addDropdownToggleEvents() {
 
   // Cliquer en dehors d'une custom dropdown ferme toute les listes ouvertes
   window.addEventListener("click", (event) => {
-    if (
-      !event.target.matches([
-        ".filters__dropdown",
-        ".filters__dropdown ul",
-        ".filters__dropdown ul li",
-        ".filters__dropdown__toggle",
-        ".filters__dropdown__toggle i",
-        ".filters__dropdown__search",
-      ])
-    ) {
+    // Si on a pas cliquer dans les listes déroulantes et leurs contenus mais
+    if (!event.target.matches([".filters__dropdown", ".filters__dropdown *"])) {
+      // ailleurs alors fermer toutes les listes
       closeAllDropdowns();
     }
   });
@@ -63,10 +56,8 @@ export function addDropdownToggleEvents() {
  * @param {Array<Object>} excludes une liste de filtres obtenue à partir des tag sélectionnés
  */
 export function displayListItem(aList, someItems, excludes) {
-  /** @type {HTMLElement} un élément li contenant un ingrédient */
+  /** @type {HTMLLIElement} un élément li contenant un ingrédient */
   let listItem;
-  /** @type {Node} le texte de l'ingrédient */
-  let text;
 
   // Supprimer tous les items li existants
   aList.replaceChildren();
@@ -88,11 +79,7 @@ export function displayListItem(aList, someItems, excludes) {
   }
 
   if (someItems.size === 0) {
-    listItem = document.createElement("li");
-    // Créer le noeud avec le texte de l'items
-    text = document.createTextNode("Aucun élément");
-    // Ajouter le texte à l'élément de liste
-    listItem.appendChild(text);
+    listItem = Dom.getListItem("", "Aucun élément");
     // Ajouter l'élément à la liste concernée
     aList.appendChild(listItem);
   } else {
@@ -100,11 +87,7 @@ export function displayListItem(aList, someItems, excludes) {
     sortSet(someItems);
     // Parcourir les items ...
     someItems.forEach((item) => {
-      listItem = document.createElement("li");
-      // Créer le noeud avec le texte de l'items
-      text = document.createTextNode(item);
-      // Ajouter le texte à l'élément de liste
-      listItem.appendChild(text);
+      listItem = Dom.getListItem("", item);
       // Ce data attribut permet de marquer l'item pour identifier son type
       listItem.setAttribute("data-type", aList.dataset.type);
       listItem.addEventListener("click", (event) => clickListItem(event));
@@ -112,7 +95,6 @@ export function displayListItem(aList, someItems, excludes) {
       aList.appendChild(listItem);
       // Raz
       item = null;
-      text = null;
     });
   }
 }
