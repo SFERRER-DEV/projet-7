@@ -17,10 +17,6 @@ html {
   margin-top: 2.6em;
 }
 
-.heading__logo {
-  margin: 0 auto;
-}
-
 .heading__title {
   color: var(--logo-color);
   font-family: "DM Sans", sans-serif;
@@ -177,17 +173,6 @@ html {
 .card-recipe:hover {
   transform: scale(1.025);
   transition: 0.2s ease-in;
-}
-
-.card-recipe__zone,
-.card-recipe__body,
-.card-recipe__body__heading__title,
-.card-recipe__body__heading__time,
-.card-recipe__body__elements__list,
-.card-recipe__body__elements__ingredients,
-.card-recipe__body__elements__description,
-.card-recipe__body__heading__time__clock {
-  /*border: 1px blue dotted;*/
 }
 
 .card-recipe__body__heading,
