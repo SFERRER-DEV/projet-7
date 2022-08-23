@@ -14,18 +14,21 @@ Réaliser le site de recettes de cuisine les petits plats pour la formation Open
 - Deux expressions régulières sont utilisées par les deux types de recherche :
   - Début de mot pour la recherche globale ("écha" trouve "échalotte" mais pas "préchauffer" par exemple)
   - Mot complet pour la recherche d'étiquettes.
-- [L'algorithme utilisant la méthode filter()](https://github.com/SFERRER-DEV/projet-7/blob/dev/scripts/util/search.js) sur les ensembles d'objets Recettes a été choisi (branches champ_de_rercherche_principal_1 -> dev -> main)
+- L'algorithme choisi utilise [la méthode filter()](https://github.com/SFERRER-DEV/projet-7/blob/dev/scripts/util/search.js) sur des ensembles d'objets Recettes (branch: champ_de_rercherche_principal_1 -> dev -> main)
 - Le fichier Dom.js contient des fonctions utilitaires nécessaires communes aux fabriques pour manipuler et créer les éléments du DOM.
 - Une méthode de factory fabrique des HTML Cards pour les cartes des recettes.
 - La librairie Bootstrap 4.6.2 est utilisée pour présenter l'affichage. Elle est fournie par BootstrapCDN.
+- Le dossier **docs/** contient la fiche d'investigation et le détail des benchmarks.
 
 ## Liens
 
 - Voir le site sur github pages : [Openclassrooms projet 7: Les petits plats](https://sferrer-dev.github.io/projet-7/index.html)
 - Code Climate: [Codebase summary projet 7](https://codeclimate.com/github/SFERRER-DEV/projet-7)
 - La recherche globale altenative se trouve sur la branche "champ_de_rercherche_principal_2" tag "v0.6": [Algorithme While & For](https://github.com/SFERRER-DEV/projet-7/blob/v0.6/scripts/util/search.js)
-- Le document **jsbench.pdf** dans le dossier **docs/** détail l'utilisation de l'outil de comparaison de performance.
-- Exemples de benchmarks Algo Filter versus Algo While & For
+- La fiche d'investigation de la fonctionnalité de recherche générale de recettes :
+  [**Fiche d'investigation.pdf**](https://github.com/SFERRER-DEV/projet-7/blob/dev/docs/Fiche%20d'investigation.pdf)
+- Le document [**jsbench.pdf**](https://github.com/SFERRER-DEV/projet-7/blob/dev/docs/jsben.ch.pdf) détail l'utilisation de l'outil de comparaison de performance.
+- Exemples de benchmarks **Algo Filter** versus **Algo While & For**
   - [Benchmark en recherchant "coco"](https://jsben.ch/76g2e)
   - [Benchmark en recherchant "échalotte"](https://jsben.ch/wGcV5)
   - [Benchmark en recherchant "pim"](https://jsben.ch/dG0mj)
