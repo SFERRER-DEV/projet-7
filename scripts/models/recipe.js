@@ -30,8 +30,10 @@ export default class Recipe {
     this._description = description;
     /** @type {string} un appareil électroménager */
     this._appliance = appliance;
+    /** @type {string} 1ere lettre en majuscule et le reste en minuscule */
+    const str = appliance.capitalizeFirstLetter();
     // Ajouter l'électroménager à la collection statique de tout l'électroménager connu
-    Recipe._AllAppliances.add(appliance.toLowerCase());
+    Recipe._AllAppliances.add(str);
     /** @type {Set} un ensemble d'ingredients uniques*/
     this._ingredients = new Map();
     /** @type {Set} un ensemble d'ustensiles uniques */
@@ -77,7 +79,7 @@ export default class Recipe {
    * @property {string} appliance un appareil électroménager nécessaire pour la recette
    */
   get appliance() {
-    return this._appliance;
+    return this._appliance.capitalizeFirstLetter();
   }
 
   /**
@@ -130,7 +132,22 @@ export default class Recipe {
    * @returns {string} chaine de caractères
    */
   toString() {
-    return `${this._id}-${this._name} (${this._ingredients.size} ingredients, ${this._ustensils.size} ustensils) ${this._appliance}`;
+    let str = "";
+    str += `ID: ${this._id}`;
+    str += "\n";
+    str += `${this._name}`;
+    str += "\n";
+    str += `- ingredients ${this._ingredients.size}: `;
+    str += Array.from(this._ingredients.values()).toString();
+    str += "\n";
+    str += `- ustensils ${this._ustensils.size}: `;
+    str += Array.from(this._ustensils.values()).toString();
+    str += "\n";
+    str += `- appliance: ${this._appliance}`;
+    str += "\n";
+    str += this._description;
+    str += "\n";
+    return str;
   }
 
   /**
@@ -140,21 +157,25 @@ export default class Recipe {
    * @param {Ingredient} ing un ingrédient de la recette
    */
   addIngredient(ing) {
-    this._ingredients.set(ing.ingredient, ing);
+    /** @type {string} 1ere lettre en majuscule et le reste en minuscule */
+    const str = ing.ingredient.capitalizeFirstLetter();
+    this._ingredients.set(str, ing); // Map.Key = "Nom de l'ingrédient"
     // Ajouter le nom de l'ingrédient dans la liste de tous les ingredients uniques de toutes les recettes
-    Recipe._AllIngredients.add(ing.ingredient.toLowerCase());
+    Recipe._AllIngredients.add(str);
   }
 
   /**
    * Ajouter un ustensile nécessaire à la recette
    * et aussi à sa collection statique
    *
-   * @param {string} ust un ustensile unique utile pour la recette
+   * @param {string} u un ustensile unique utile pour la recette
    */
-  addUstensil(ust) {
-    this._ustensils.add(ust);
+  addUstensil(u) {
+    /** @type {string} 1ere lettre en majuscule et le reste en minuscule */
+    const str = u.capitalizeFirstLetter();
+    this._ustensils.add(str);
     // Ajouter aussi le nom de l'ustensile dans la liste de tous les ustensiles uniques connus
-    Recipe._AllUstensils.add(ust);
+    Recipe._AllUstensils.add(str);
   }
 
   /**
@@ -193,8 +214,6 @@ export default class Recipe {
     data.ustensils.forEach(function (item) {
       // Ajouter le nom de l'ustensile dans la collection des ustensiles de la recette
       rec.addUstensil(item);
-      // Ajouter le nom de l'ustensile dans la liste de tous les ustensile uniques
-      Recipe._AllUstensils.add(item);
     });
 
     return rec;

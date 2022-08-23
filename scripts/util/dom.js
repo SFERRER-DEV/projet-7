@@ -98,6 +98,20 @@ export const getIcone = (oneOrSomeClasses = "") => {
 };
 
 /**
+ * Obtenir un list item avec sa ou ses classe(s)
+ *
+ * @param {string | Array<string> } [oneOrSomeClasses = "" ] - une classe ou une liste de classes CSS/Boostrap
+ * @param {string} [strText=""] - une chaine de caractère
+ * @returns {HTMLLIElement} balise list item
+ */
+export const getListItem = (oneOrSomeClasses = "", strText = "") => {
+  /** @type {HTMLElement} - balise i pour contenir l'icone */
+  const listItem = document.createElement("li");
+
+  return _setBalise(listItem, oneOrSomeClasses, strText);
+};
+
+/**
  * Paramétrer une balise html div, p, span
  * pouvant contenir du texte.
  *

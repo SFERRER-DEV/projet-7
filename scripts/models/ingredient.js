@@ -1,3 +1,6 @@
+// Importer les fonctions pour travailler avec les chaines de caractères en étendant la class String
+import "./../util/string.js";
+
 export default class Ingredient {
   /**
    * @param {string} ingredient nom de l'ingrédient
@@ -14,10 +17,10 @@ export default class Ingredient {
   }
 
   /**
-   * @property {string} ingredient nom de l'ingrédient
+   * @property {string} ingredient nom de l'ingrédient mis en forme
    */
   get ingredient() {
-    return this._ingredient;
+    return this._ingredient.capitalizeFirstLetter();
   }
 
   /**
