@@ -12,15 +12,15 @@ import { getRegExp } from "./../util/regex.js";
  *
  * @param {string} str le texte complet du tag à rechercher
  * @param {Array<Recipe>} recipes une liste de recettes
- * @param {string} filtre le type de filtres de recherche (appliances, ingredients, ustensils)
+ * @param {string} typeFiltre le type de filtres de recherche (appliances, ingredients, ustensils)
  *
  * @returns Array<Recipe> la liste des objets recettes trouvés
  */
-export function findBy(str, recipes, filtre) {
+export function findBy(str, recipes, typeFiltre) {
   /** @type {string} les signes diacritiques sont remplacés dans la chaine à rechercher */
   const needle = str.removeDiacritics();
 
-  console.log(`findBy ${filtre}: ${needle}`);
+  console.log(`    findBy ${typeFiltre}: ${needle}`);
 
   /** @type {Array<Recipe>} un tableau de recettes qui sont filtrées par la recherche */
   let someRecipes = [];
@@ -28,7 +28,7 @@ export function findBy(str, recipes, filtre) {
   /** @type {Object} recherche par correspodance complète */
   const regex = getRegExp(needle, true);
 
-  if (filtre === "appliances") {
+  if (typeFiltre === "appliances") {
     // Obtenir le tableau des recettes filtrées
     someRecipes = recipes.filter(function (item) {
       // les signes diacritiques sont remplacés dans l'électroménager
@@ -39,10 +39,10 @@ export function findBy(str, recipes, filtre) {
     someRecipes = recipes.filter(function (item) {
       /** @type {string} applatir une structure Set */
       let flatten;
-      if (filtre === "ingredients") {
+      if (typeFiltre === "ingredients") {
         // applatir la structure Set contenant les ingrédients
         flatten = Array.from(item.ingredients.values()).toString();
-      } else if (filtre === "ustensils") {
+      } else if (typeFiltre === "ustensils") {
         // applatir la structure Set contenant les ustensiles */
         flatten = Array.from(item.ustensils.values()).toString();
       }
@@ -50,6 +50,9 @@ export function findBy(str, recipes, filtre) {
       return regex.test(flatten.removeDiacritics());
     });
   }
+
+  // Imprimer le nombre de recettes filtrées
+  console.log(`    ${recipes.length} => ${someRecipes.length} recettes`);
 
   // Renvoyer les recettes filtrées
   return someRecipes;

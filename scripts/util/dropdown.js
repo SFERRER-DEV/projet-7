@@ -1,8 +1,3 @@
-// Importer les fonctions utilitaires pour créer des éléments du DOM
-import * as Dom from "./../util/dom.js";
-// Importer les fonctions utilitaires pour gérer les listes de filtres
-import { filterBySearchAndTags } from "./../pages/index.js";
-
 /**
  * Ajouter un évènement à chaqu'un des boutons  pour ouvrir ou fermer
  * sa listes déroulante.
@@ -47,55 +42,81 @@ export function addDropdownToggleEvents() {
 }
 
 /**
- * Assembler dans une liste html ul les éléments stockés
- * dauns une collection Set pour les ingrédients, les ustensiles
- * et pour l'électroménager
- *
- * @param {HTMLElement} aList une liste html ul
- * @param {Set} someItems une collection d'ingrédients, d'ustensiles ou de l'électroménager
- * @param {Array<Object>} excludes une liste de filtres obtenue à partir des tag sélectionnés
+ * Ajouter un évènement à chaqu'une des zones de saisie des dropboxs
+ * pour filter l'affichage de ses items dans le but de restreindre
+ * son choix d'étiquettes possibles
  */
-export function displayListItem(aList, someItems, excludes) {
-  /** @type {HTMLLIElement} un élément li contenant un ingrédient */
-  let listItem;
-
-  // Supprimer tous les items li existants
-  aList.replaceChildren();
-
-  // Si il y a des étiquettes séléctionnées et affichées
-  // alors il y a des items à ne pas montrer dans les listes déroulantes
-  if (excludes.length > 0) {
-    // Parcourir une collection d'ingredients, d'ustensiles ou d'électromenager
-    someItems.forEach(
-      function (item) {
-        // this est un tableau à exclure
-        if (this.includes(item)) {
-          someItems.delete(item); // exclure
-        }
-      },
-      // Envoyer dans le scope de la boucle un tableau d'exclusion de libellés de filtres
-      excludes.map((e) => e.item) // Ne prendre que le libellé des filtres
+export function addDropdownFilterEvents() {
+  /** @type {NodeList} les trois zones de saisie utilisées pour restreindre l'affichage des étiquettes dans les dropbox */
+  const dropdowns = document.querySelectorAll(".filters__dropdown__search");
+  // Parcourir les trois boutons toggle
+  dropdowns.forEach((elm) => {
+    elm.addEventListener("input", (event) =>
+      // l'attribut html data-type contient soit ingredients, ustensils, appliances
+      filterFunction(event.currentTarget.dataset.type)
     );
-  }
+  });
+}
 
-  if (someItems.size === 0) {
-    listItem = Dom.getListItem("", "Aucun élément");
-    // Ajouter l'élément à la liste concernée
-    aList.appendChild(listItem);
-  } else {
-    // Trier sur place par ordre ascendant la liste des items
-    sortSet(someItems);
-    // Parcourir les items ...
-    someItems.forEach((item) => {
-      listItem = Dom.getListItem("", item);
-      // Ce data attribut permet de marquer l'item pour identifier son type
-      listItem.setAttribute("data-type", aList.dataset.type);
-      listItem.addEventListener("click", (event) => clickListItem(event));
-      // Ajouter l'élément à la liste concernée
-      aList.appendChild(listItem);
-      // Raz
-      item = null;
-    });
+/**
+ * Saisir des caratères dans la zone de texte d'une liste déroulante
+ * d'ingrédients, d'ustensiles ou d'électroménager
+ * filtre et restreint l'affichage de ses items à choisir.
+ *
+ * @param {string} filterType - chaine à partir de l'attribut html data-type (ingredients, ustensils ou appliances)
+ */
+function filterFunction(filterType) {
+  /** @type {string} l'identifiant du champ de saisi pour la recherche d'un ingrédient, d'un ustensile ou d'un appareil */
+  const idSearch = `${filterType}-search`;
+  /** @type {HTMLFormElement} le champ de saisi */
+  const input = document.getElementById(idSearch);
+  /** @type {string} */
+  const filter = input.value.trim().toUpperCase();
+
+  /** @type {string} l'identifiant de la liste d'items d'ingrédients, d'ustensiles ou d'appareils */
+  const idList = `${filterType}-list`;
+  /** @type {HTMLElement} la liste de ces items */
+  const ul = document.getElementById(idList);
+  /** @type {HTMLCollection} tous les items de cette liste */
+  const listItems = ul.querySelectorAll("li");
+  listItems.forEach(function (item) {
+    // Certains items pourraient être masqués par une recherche dans l'input de la dropbox
+    item.style.display = "list-item"; // alors il faut d'assurer de les afficher tous avant de filtrer
+  });
+
+  if (filter.length > 0) {
+    /** @type {string} l'identifiant d'une custom dropbox */
+    const idDropbox = `${filterType}-dropdown`;
+    /** @type {HTMLDivElement} l'élémént div contenant toute la custom dropbox */
+    const dropdown = document.querySelector(`#${idDropbox}`);
+
+    /** @type {string} l'identifiant d'un bouton pour afficher masque la custom dropdox */
+    const idToogle = `${filterType}-toggle`;
+    /** @type {HTMLButtonElement} le bouton pour ouvrir fermer la dropdown */
+    const toggle = document.getElementById(idToogle);
+
+    // Si la dropdown n'est pas ouverte ...
+    if (!dropdown.classList.contains("show")) {
+      toggle.click(); // alors appuyer sur son bouton pour afficher ses items
+    }
+
+    /** @type {string} le nom d'un ingredient, d'un ustensile ou d'un appareil affiché dans la liste */
+    let txtValue;
+    // Parcourir tous les items pour n'afficher que ceux qui correspondent à la saisie
+    for (let i = 0; i < listItems.length; i++) {
+      txtValue = listItems[i].textContent;
+      if (txtValue.toLowerCase() === "aucun élément") {
+        // RaB
+        input.value = "";
+        break;
+      } else if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        // Afficher un item
+        listItems[i].style.display = "list-item";
+      } else {
+        // Masquer un item qui ne correspond pas au filtre saisi
+        listItems[i].style.display = "none";
+      }
+    }
   }
 }
 
@@ -195,79 +216,6 @@ function closeAllDropdowns() {
 }
 
 /**
- * Cliquer sur un item dans une des listes ingredients, ustensiles
- * ou électroménager ajouter un tag bleu, rouge ou vert dans la zone
- * des filtres d'étiquettes
- * et lance le filtre des recettes par les tags
- *
- * @param {Event} event un évènement click sur un list-item bleu, rouge, vert
- */
-function clickListItem(event) {
-  /** @type {string} le type du filtre cliqué */
-  const filterType = event.currentTarget.dataset.type;
-  /** @type {string} le texte de l'élément cliqué  */
-  const tagText = event.currentTarget.textContent;
-
-  console.log(`Click ! ${filterType}: ${tagText}`);
-
-  /** @type {HTMLDivElement} le conteneur des étiquettes de filtre */
-  const parent = document.getElementById("tags");
-
-  /** @type {HTMLSpanElement} une étiquette html bleue, verte ou rouge */
-  const aTag = Dom.getSpan(
-    ["tags__tag", "px-2", "py-1", "m-1", "my-2", "rounded"],
-    `${tagText}`
-  );
-  // Typer l'étiquette: ingredient, ustensile, électroménager
-  aTag.setAttribute("data-type", filterType);
-
-  /** @type {HTMLElement} - l'icone croix pour fermer ce tag */
-  const icone = Dom.getIcone([
-    "tags__tag__cross",
-    "bi",
-    "bi-x-circle",
-    "ml-3",
-    "my-auto",
-  ]);
-
-  // Ajouter la croix au tag
-  aTag.append(icone);
-
-  // Ajouter l'évènement pour faire disparaitre l'étiquette avec ss croix
-  aTag.addEventListener("click", (event) => closeTag(event));
-
-  // Ajouter ce tag pour l'afficher sur la ligne des tags
-  parent.appendChild(aTag);
-
-  /** @type {string} l'identifiant du champ de saisi pour la recherche d'un ingrédient, d'un ustensile ou d'un appareil */
-  const idSearch = `${filterType}-search`;
-  /** @type {HTMLFormElement} le champ de saisi */
-  const input = document.getElementById(idSearch);
-  // Remise à blanc de la zone de saisie après l'ajout du tag dans la zone des filtres d'étiquettes
-  input.value = "";
-
-  // Filtrer les recettes à partir des tags sélectionnés et affichés
-  filterBySearchAndTags();
-}
-
-/**
- * Fermer une étiquette
- *
- * @param {Event} event un évènement click sur la croix d'une étiquette
- */
-function closeTag(event) {
-  /** @type {HTMLDivElement} le conteneur html des étiquettes de filtre */
-  const parent = document.getElementById("tags");
-  /** @type {HTMLSpanElement} l'étiquette cliquée  */
-  const tag = event.currentTarget;
-  // faire disparaitre l'étiquette
-  parent.removeChild(tag);
-
-  // Filtrer les recettes à partir des tags sélectionnés et affichés
-  filterBySearchAndTags();
-}
-
-/**
  * Trier une collection de type Set sur place
  * et la renvoyer après un tri ascendant
  * tenant compte des accents
@@ -275,7 +223,7 @@ function closeTag(event) {
  * @param {Set} set une structure à trier
  * @returns {Set} Structure triée
  */
-function sortSet(set) {
+export function sortSet(set) {
   const entries = [];
   for (const member of set) {
     entries.push(member);

@@ -16,8 +16,10 @@ export class RecipesApi {
    * Créer un singleton pour obtenir des données de type Recipes
    */
   constructor() {
-    /** @type {Recipe[]} une liste d'objets de type Recipe */
+    /** @type {Array<Recipe>} une liste d'objets de type Recipe */
     this._data = [];
+    /** @type {number} le nombre de recettes contenues */
+    this._count = 0;
 
     if (instance) {
       throw new Error("You can only create one instance of RecipeApi class !");
@@ -48,6 +50,8 @@ export class RecipesApi {
       let rec = Recipe.createRecipe(obj);
       // Ajouter un objet de type Recipe au tableau
       this._data.push(rec);
+      // Incrémenter le compteur de recettes
+      this._count++;
     });
   }
 
@@ -58,6 +62,7 @@ export class RecipesApi {
    * @returns {Array<Recipe>} la liste de toutes les recettes
    */
   getDataRecipes() {
+    console.log(`>>> Demander les ${this._data.length} recettes connues`);
     return this._data;
   }
 
@@ -77,6 +82,13 @@ export class RecipesApi {
 
     return jsonRecipes;
   }
+
+  /**
+   * @property {number} le nombre de recettes contenues
+   */
+  get Count() {
+    return this._count;
+  }
 }
 
 /** @type {RecipesApi} - l'objet unique RecipesApi */
@@ -86,5 +98,12 @@ const singletonRecipesApi = new RecipesApi();
 singletonRecipesApi.setDataRecipes(singletonRecipesApi._getAllRecipesJson());
 // Geler ce singleton
 Object.freeze(singletonRecipesApi);
+
+// Afficher le nombre d'ingredients, d'ustensiles et d'électroménager mémorisés dans les variables statiques
+// des objets recette de la classe Recipe
+console.log(`Recettes trouvées: ${singletonRecipesApi.Count}`);
+console.log(`Ingrédients trouvés: ${Recipe.allIngredients.size}`);
+console.log(`Ustensiles trouvés: ${Recipe.allUstensils.size}`);
+console.log(`Electoménager trouvé: ${Recipe.allAppliances.size}`);
 
 export default singletonRecipesApi;
