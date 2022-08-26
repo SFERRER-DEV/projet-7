@@ -188,9 +188,10 @@ const addSearchEvents = () => {
 
   // Ecouter les caractères saisis dans la zone de texte
   searchInput.addEventListener("input", () => {
+    // Mémoriser la recherche saisie
     needles.push(searchInput.value.trim());
     // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
-    recipesFound = filterBySearch(recipesFound);
+    recipesFound = filterBySearch(singletonRecipesApi.getDataRecipes());
     recipesFound = filterByTags(recipesFound);
     // Afficher le résultat de la recherche
     displayData(recipesFound);
@@ -203,11 +204,13 @@ const addSearchEvents = () => {
   // Ecouter la soumission du formulaire
   searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    // Vider les recherché précédentes
+    // Vider les recherches précédentes
     needles.splice(0, needles.length);
+    // Mémoriser la recherche saisie
     needles.push(searchInput.value.trim());
+
     // Effectuer une recherche globale, une recherche par étiquettes et afficher le résultat
-    recipesFound = filterBySearch(recipesFound);
+    recipesFound = filterBySearch(singletonRecipesApi.getDataRecipes());
     recipesFound = filterByTags(recipesFound);
     // Afficher le résultat de la recherche
     displayData(recipesFound);
@@ -306,53 +309,23 @@ function closeTag(event) {
  * Effectuer une recherche globale de recettes,
  * Filtrer ces recettes à partir d'étiquettes
  * depuis tableau d'objets de filtres
+ * La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
  *
  * @param {Array<Recipe>} recipes une liste de recettes filtrée ou toutes les recettes connues
  * @returns {Array<Recipe>} la liste des objets recettes trouvés
  */
 const filterBySearch = (recipes = []) => {
   console.log("    ===> Filter by Search");
-  /** @type {string} la dernière recherche saisie*/
+  /** @type {string} la dernière recherche saisie */
   const needle = needles.at(-1) !== undefined ? needles.at(-1) : "";
-  /** @type {string} l'avant dernière recherche saisie*/
-  const needlePrevious = needles.at(-2) !== undefined ? needles.at(-2) : "";
 
-  // Obtenir les recettes affichées via une nouvelle recherche globale
-  // La recherche globale ne commence que quand l'utilisateur rentre 3 caractères
   if (needle.length < 3 && !areAllRecipesDiplayed()) {
-    // Obtenir toutes les recettes connues
-    // au premier affichage ou à la demande
-    // quand le formulaire est soumis avec moins de trois lettres
-    // et que toutes les recettes connues ne sont pas passées en paramètre
     if (recipes.length !== singletonRecipesApi.Count) {
       recipes = singletonRecipesApi.getDataRecipes();
     }
-  } else if (
-    needle.length >= 3 &&
-    needle.length < needlePrevious.length &&
-    needlePrevious.indexOf(needle) === 0
-  ) {
-    // Effectuer une recherche globale dans toutes les recettes connues
-    // quand des lettres sont supprimées de la zone de saisie
-    // "Limonade" 50 => 2
-    // "Limonade de coco" 2 => 1
-    // "Limonade" 50 => 2
-    recipes = findRecipes(needle, singletonRecipesApi.getDataRecipes());
-  } else if (needle.length >= 3 && needle !== needlePrevious) {
-    // Effectuer une recherche globale dans les recettes filtrées
-    // en évitant de refaire deux fois de suite la même recherche
-    if (recipes.length > 0) {
-      // Protection: les recherches précédentes peuvent ne plus rien trouver
-      recipes = findRecipes(needle, recipes);
-    } else if (needle.indexOf(needlePrevious) === -1) {
-      // "Rac" 50 => 1
-      // "Raclettt" 1 => 0
-      // "Raclettte" 0 => 0
-      needles.splice(0, needles.length);
-      recipes = singletonRecipesApi.getDataRecipes();
-    }
   } else {
-    // Ne rien faire
+    // Effectuer une recherche globale dans toutes les recettes connues
+    recipes = findRecipes(needle, recipes);
   }
 
   return recipes;
