@@ -344,12 +344,8 @@ const filterByTags = (recipes = []) => {
 
   // Parcourir la liste des tags des filtres sélectionnés
   filters.forEach((filtre) => {
-    // Il n'est pas utile de filtrer plus
-    // commes les filtre sont obtenus par les recettes
-    if (recipes.length > 1) {
-      // Déterminer le type de filtre à appliquer à l'item
-      recipes = findBy(filtre.item, recipes, filtre.list);
-    }
+    // Déterminer le type de filtre à appliquer à l'item
+    recipes = findBy(filtre.item, recipes, filtre.list);
   });
 
   return recipes;

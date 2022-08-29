@@ -5,10 +5,10 @@
 Réaliser le site de recettes de cuisine les petits plats pour la formation Openclassrooms de développeur d'application JS React. Les petits plats est le projet numéro 7 de la formation.
 
 - Cliquer sur une HTML Card de recette imprime cette recette sur la console avec son id, ses ingrédients, ustentiles, électroménager et description complète.
-- Une classe singleton RecipesAPI crée un tableau d'objets Recette tout en découvrant tous les ingrédients, les ustensiles et l'électroménager présents dans les données.
+- Une classe singleton RecipesAPI crée un tableau d'objets de recettes **Recipe** en découvrant tous les ingrédients, les ustensiles et l'électroménager présents dans les données.
 - La classe recette Recipe a trois propriétés statiques allIngredients, allUstensils, allAppliances pour contenir tous les ingrédients, les ustensiles et l'électroménager découverts dans les 50 recettes du tableau JavaScript de données. Ces propriétés sont des stuctures Set.
 - La classe recette **Recipe** stocke ses ingrédients de recette dans une structure Map dont la clé est le nom de l'ingrédient et la valeur est un objet de la classe **Ingredient**
-- Deux fonctions étendent la classe String pour travailler avec les chaines de caractères:
+- Deux fonctions étendent la classe **String** pour travailler avec les chaines de caractères:
   - capitalizeFirstLetter()
   - removeDiacritics() : Remplacer tous les signes qui s'ajoute aux lettres avant de faire des recherches.
 - Deux expressions régulières sont utilisées par les deux types de recherche :
